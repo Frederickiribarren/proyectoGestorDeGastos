@@ -1,0 +1,8 @@
+/* Ajustes para el form */
+form.border {
+	padding: 20px;
+	background: #fff;
+}
+
+/* Footer text */
+.bg-primary .text-white { color: #fff; }

@@ -1,0 +1,283 @@
+/* Variables CSS */
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+    --danger-color: #dc3545;
+    --light-bg: #f8f9fa;
+    --transition-speed: 0.3s;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.navbar-brand {
+    transition: transform var(--transition-speed) ease;
+}
+
+.navbar-brand:hover {
+    transform: translateY(-2px);
+}
+
+/* Cards */
+.card {
+    border-radius: 0.75rem;
+    transition: all var(--transition-speed) ease;
+    animation: fadeInUp 0.5s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important;
+}
+
+/* Card headers */
+.card-header {
+    background-color: white;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.card-header h5 {
+    display: flex;
+    align-items: center;
+}
+
+/* Formularios mejorados */
+.form-label {
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* Switches personalizados */
+.form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-label {
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.form-check-label strong {
+    color: #212529;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+/* Botones mejorados */
+.btn {
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Grupo de botones de tema */
+.btn-group {
+    display: flex;
+    gap: 0;
+}
+
+.btn-group .btn-outline-primary {
+    transition: all var(--transition-speed) ease;
+    flex: 1;
+}
+
+.btn-check:checked + .btn-outline-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Alerts personalizados */
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.alert-info {
+    background-color: #cff4fc;
+    color: #055160;
+}
+
+/* Dropdown mejorado */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--light-bg);
+    padding-left: 1.25rem;
+}
+
+.dropdown-item.active {
+    background-color: var(--primary-color);
+}
+
+/* Separador */
+hr {
+    border-top: 2px solid #e9ecef;
+    opacity: 1;
+    margin: 1.5rem 0;
+}
+
+/* Zona de peligro */
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.btn-outline-danger {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: white;
+}
+
+/* Botones de acción secundarios */
+.btn-outline-primary, .btn-outline-secondary, .btn-outline-success {
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mejoras de accesibilidad */
+.form-control:disabled,
+.form-select:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+/* Sombras personalizadas */
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.075) !important;
+}
+
+/* Text utilities */
+.text-muted {
+    color: #6c757d !important;
+}
+
+.fw-semibold {
+    font-weight: 600;
+}
+
+/* Iconos en cards */
+.card-header i {
+    font-size: 1.25rem;
+}
+
+/* Espaciado mejorado */
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        border-radius: 0.5rem !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-bottom: 0;
+    }
+    
+    h1.h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem !important;
+    }
+}
+
+/* Estados de sesiones */
+.alert i {
+    flex-shrink: 0;
+}
+
+/* Pequeños ajustes de UI */
+small.text-muted {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.form-check-switch {
+    padding-left: 3.5rem;
+}
