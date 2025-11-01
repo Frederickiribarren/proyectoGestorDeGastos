@@ -95,6 +95,10 @@ form h1 {
 
 .emailError,
 .passError,
+.nameError,
+.passwordError,
+.confirmError,
+.termsError,
 .warning {
 	font-size: 0.875rem;
 	margin-top: 0.25rem;

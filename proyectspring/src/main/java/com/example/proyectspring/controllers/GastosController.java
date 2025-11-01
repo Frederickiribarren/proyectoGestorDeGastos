@@ -4,14 +4,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
-
 @Controller
-public class UsuarioController {
+public class GastosController {
     
-    
-    @GetMapping("/listaUsuarios")
-    public String listaUsuarios() {
-        return "listaUsuarios";
+    @GetMapping("/gastos")
+    public String getGastos() {
+        return "gastos/gastos";
     }
     
 }

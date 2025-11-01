@@ -9,7 +9,7 @@ public class ConfiguracionController {
 
     @GetMapping("/configuracion")
     public String getConfiguracion() {
-        return "configuracion";
+        return "configuracion/configuracion";
     }
     
 }

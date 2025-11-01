@@ -16,7 +16,7 @@
   <!-- NAVBAR SUPERIOR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/dashboard}" href="/dashboard">
         <img th:src="@{/image/factura.png}" src="/image/factura.png" alt="PocketBook" width="30" height="24">
         <span class="fw-bold">PocketBook</span>
       </a>
@@ -30,11 +30,53 @@
               <i class="bi bi-person-circle fs-5"></i>
               <span>Usuario</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" th:href="@{/perfil}"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
-              <li><a class="dropdown-item" th:href="@{/configuracion}"><i class="bi bi-gear me-2"></i>Configuración</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" th:href="@{/login}"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+            <ul class="dropdown-menu dropdown-menu-end user-dropdown shadow-lg border-0 mt-2 py-2">
+              <li class="dropdown-header px-3 pb-2">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-person-circle text-primary fs-4"></i>
+                  <div>
+                    <div class="fw-bold text-dark">Usuario Demo</div>
+                    <small class="text-muted">usuario@email.com</small>
+                  </div>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider my-2"></li>
+              <li>
+                <a class="dropdown-item user-menu-item d-flex align-items-center gap-3 px-3 py-2" th:href="@{/perfil}" href="/perfil">
+                  <div class="menu-icon-wrapper bg-primary-subtle rounded-circle p-2">
+                    <i class="bi bi-person text-primary"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <div class="fw-semibold">Mi Perfil</div>
+                    <small class="text-muted">Ver y editar información</small>
+                  </div>
+                  <i class="bi bi-chevron-right text-muted small"></i>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item user-menu-item d-flex align-items-center gap-3 px-3 py-2" th:href="@{/configuracion}" href="/configuracion">
+                  <div class="menu-icon-wrapper bg-info-subtle rounded-circle p-2">
+                    <i class="bi bi-sliders text-info"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <div class="fw-semibold">Configuración</div>
+                    <small class="text-muted">Preferencias y ajustes</small>
+                  </div>
+                  <i class="bi bi-chevron-right text-muted small"></i>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider my-2"></li>
+              <li>
+                <a class="dropdown-item user-menu-item logout-item d-flex align-items-center gap-3 px-3 py-2" th:href="@{/login}" href="/login">
+                  <div class="menu-icon-wrapper bg-danger-subtle rounded-circle p-2">
+                    <i class="bi bi-box-arrow-right text-danger"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <div class="fw-semibold text-danger">Cerrar Sesión</div>
+                    <small class="text-muted">Salir de tu cuenta</small>
+                  </div>
+                </a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -60,13 +102,13 @@
           
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active d-flex align-items-center gap-2" href="#">
+              <a class="nav-link active d-flex align-items-center gap-2" th:href="@{/dashboard}" href="/dashboard">
                 <i class="bi bi-house-door"></i>
                 <span>Dashboard</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" th:href="@{/gastos}" href="/gastos">
                 <i class="bi bi-receipt"></i>
                 <span>Mis Gastos</span>
               </a>
@@ -89,6 +131,13 @@
                 <span>Categorías</span>
               </a>
             </li>
+            <!--SECCION PARA GESTIONAR DB DE USUARIOS -->
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" th:href="@{/gestor-usuarios}" href="/gestor-usuarios">
+                <i class="bi bi-database"></i>
+                <span>Base de Datos</span>
+              </a>
+            </li>
           </ul>
         </div>
       </aside>
@@ -100,12 +149,6 @@
             <i class="bi bi-grid text-primary me-2"></i>
             Dashboard
           </h1>
-          <div class="btn-toolbar mb-2 mb-md-0">
-            <button type="button" class="btn btn-sm btn-primary">
-              <i class="bi bi-plus-circle me-1"></i>
-              Nuevo Gasto
-            </button>
-          </div>
         </div>
 
         <!-- CARDS DE RESUMEN -->
@@ -189,10 +232,6 @@
                 <div class="text-center py-5 text-muted">
                   <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
                   <p>No hay transacciones recientes</p>
-                  <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus-circle me-1"></i>
-                    Agregar Primera Transacción
-                  </button>
                 </div>
               </div>
             </div>

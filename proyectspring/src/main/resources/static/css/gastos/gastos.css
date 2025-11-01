@@ -1,0 +1,181 @@
+/* Estilos para la página de gastos */
+
+/* Tabla de gastos */
+#tablaGastos thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+}
+
+#tablaGastos tbody tr {
+    transition: all 0.2s ease;
+}
+
+#tablaGastos tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: translateX(2px);
+}
+
+#tablaGastos tbody td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+/* Badges de categorías */
+.badge-categoria {
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+.badge-alimentacion {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-transporte {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.badge-vivienda {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-entretenimiento {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.badge-salud {
+    background-color: #e7d6f5;
+    color: #4a148c;
+}
+
+.badge-educacion {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+
+.badge-servicios {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.badge-ropa {
+    background-color: #f5e6f7;
+    color: #6a1b9a;
+}
+
+.badge-otros {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* Badges de método de pago */
+.badge-pago {
+    padding: 0.3rem 0.6rem;
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 15px;
+}
+
+.badge-efectivo {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-debito,
+.badge-credito {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+
+.badge-transferencia {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.badge-otro {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* Botones de acción */
+.btn-action {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Estado vacío */
+#emptyState i {
+    opacity: 0.3;
+}
+
+/* Animación para nuevas filas */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.new-row {
+    animation: slideIn 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #tablaGastos {
+        font-size: 0.875rem;
+    }
+    
+    #tablaGastos thead th,
+    #tablaGastos tbody td {
+        padding: 0.5rem;
+    }
+    
+    .badge-categoria,
+    .badge-pago {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Filtros */
+.input-group .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Totales */
+#montoTotal {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* Cards de resumen */
+.card.bg-light {
+    transition: all 0.3s ease;
+}
+
+.card.bg-light:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}

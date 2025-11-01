@@ -8,6 +8,6 @@ public class PerfilController {
 
     @GetMapping("/perfil")
     public String getMostrarPerfil() {
-        return "perfil";
+        return "perfil/perfil";
     }
 }

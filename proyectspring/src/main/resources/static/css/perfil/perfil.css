@@ -321,12 +321,10 @@ hr {
     opacity: 1;
 }
 
-/* Sombras personalizadas */
 .shadow-sm {
     box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.075) !important;
 }
 
-/* Text utilities */
 .text-muted {
     color: #6c757d !important;
 }
@@ -335,7 +333,6 @@ hr {
     font-weight: 600;
 }
 
-/* Zona de peligro - Eliminar cuenta */
 .border-danger {
     border: 2px solid var(--danger-color) !important;
 }
@@ -379,7 +376,6 @@ hr {
     flex-shrink: 0;
 }
 
-/* Modal personalizado */
 .modal-content {
     border-radius: 0.75rem;
 }
@@ -396,7 +392,6 @@ hr {
     filter: brightness(0) invert(1);
 }
 
-/* Code en modal */
 code {
     background-color: #f8d7da;
     color: var(--danger-color);
@@ -405,7 +400,6 @@ code {
     font-size: 0.875rem;
 }
 
-/* Lista en zona de peligro */
 .card-body ul {
     padding-left: 1.5rem;
 }
