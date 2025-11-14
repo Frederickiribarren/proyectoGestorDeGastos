@@ -182,8 +182,8 @@ form h1 {
 }
 
 .btn-primary:hover::before {
-	width: 300px;
-	height: 300px;
+	width: 350px;
+	height: 350px;
 }
 
 .btn-primary:hover {
