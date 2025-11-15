@@ -161,7 +161,7 @@ body {
 
 /* Switches personalizados */
 .form-check-input {
-    width: 3rem;
+    width: 1.5rem;
     height: 1.5rem;
     cursor: pointer;
     transition: all var(--transition-speed) ease;
@@ -348,7 +348,7 @@ hr {
 .btn-danger {
     background-color: var(--danger-color);
     border-color: var(--danger-color);
-    color: white;
+    color: rgb(211, 82, 43);
 }
 
 .btn-danger:hover {
@@ -388,6 +388,12 @@ hr {
     background-color: var(--danger-color) !important;
 }
 
+.modal-header.bg-danger .modal-title {
+    color: #000000;
+    text-align: center;
+    width: 100%;
+}
+
 .btn-close-white {
     filter: brightness(0) invert(1);
 }
@@ -407,3 +413,4 @@ code {
 .card-body ul li {
     margin-bottom: 0.5rem;
 }
+

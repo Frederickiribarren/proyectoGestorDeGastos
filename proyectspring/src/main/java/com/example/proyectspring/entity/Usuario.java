@@ -51,6 +51,9 @@ public class Usuario {
     @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
     
+    @Column(name = "palabra_seguridad")
+    private String palabraSeguridad;
+    
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd-MM-yyy")
     private Date creatAt;
@@ -203,6 +206,14 @@ public class Usuario {
 
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getPalabraSeguridad() {
+        return palabraSeguridad;
+    }
+
+    public void setPalabraSeguridad(String palabraSeguridad) {
+        this.palabraSeguridad = palabraSeguridad;
     }
 
 }

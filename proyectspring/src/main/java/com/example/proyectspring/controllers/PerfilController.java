@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.proyectspring.dto.PerfilDTO;
+import com.example.proyectspring.dto.SeguridadDTO;
+import com.example.proyectspring.dto.PalabraSeguridadDTO;
+import com.example.proyectspring.dto.EliminarCuentaDTO;
 import com.example.proyectspring.entity.Usuario;
 import com.example.proyectspring.service.UsuarioService;
 
@@ -63,7 +66,11 @@ public class PerfilController {
         perfilDTO.setFechaNacimiento(usuario.getFechaNacimiento());
         
         model.addAttribute("perfilDTO", perfilDTO);
+        model.addAttribute("seguridadDTO", new SeguridadDTO());
+        model.addAttribute("palabraSeguridadDTO", new PalabraSeguridadDTO());
+        model.addAttribute("eliminarCuentaDTO", new EliminarCuentaDTO());
         model.addAttribute("usuario", usuario);
+        model.addAttribute("tienePalabraSeguridad", usuario.getPalabraSeguridad() != null);
         
         return "perfil/perfil";
     }
@@ -99,6 +106,103 @@ public class PerfilController {
         } catch (Exception e) {
             model.addAttribute("error", "Error al actualizar el perfil: " + e.getMessage());
             return "perfil/perfil";
+        }
+    }
+    
+    @PostMapping("/perfil/cambiar-password")
+    public String cambiarPassword(@Valid @ModelAttribute SeguridadDTO seguridadDTO,
+                                  BindingResult result,
+                                  Principal principal,
+                                  RedirectAttributes redirectAttributes,
+                                  Model model) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorSeguridad", "Por favor, corrige los errores");
+            return "redirect:/perfil";
+        }
+        
+        try {
+            String email = principal.getName();
+            Usuario usuario = usuarioService.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            boolean cambioExitoso = usuarioService.cambiarPassword(usuario.getId(), seguridadDTO);
+            
+            if (cambioExitoso) {
+                redirectAttributes.addFlashAttribute("mensajeSeguridad", "Contraseña actualizada correctamente");
+            } else {
+                redirectAttributes.addFlashAttribute("errorSeguridad", "La contraseña actual es incorrecta o las nuevas contraseñas no coinciden");
+            }
+            
+            return "redirect:/perfil";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorSeguridad", "Error al cambiar la contraseña: " + e.getMessage());
+            return "redirect:/perfil";
+        }
+    }
+    
+    @PostMapping("/perfil/configurar-palabra-seguridad")
+    public String configurarPalabraSeguridad(@Valid @ModelAttribute PalabraSeguridadDTO palabraSeguridadDTO,
+                                             BindingResult result,
+                                             Principal principal,
+                                             RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorPalabraSeguridad", "Por favor, corrige los errores");
+            return "redirect:/perfil";
+        }
+        
+        try {
+            String email = principal.getName();
+            Usuario usuario = usuarioService.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            usuarioService.configurarPalabraSeguridad(usuario.getId(), palabraSeguridadDTO.getPalabraSeguridad());
+            
+            redirectAttributes.addFlashAttribute("mensajePalabraSeguridad", "Palabra de seguridad configurada correctamente");
+            return "redirect:/perfil";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorPalabraSeguridad", "Error al configurar palabra de seguridad: " + e.getMessage());
+            return "redirect:/perfil";
+        }
+    }
+    
+    @PostMapping("/perfil/eliminar-cuenta")
+    public String eliminarCuenta(@Valid @ModelAttribute EliminarCuentaDTO eliminarCuentaDTO,
+                                 BindingResult result,
+                                 Principal principal,
+                                 RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorEliminacion", "Datos incompletos");
+            return "redirect:/perfil";
+        }
+        
+        try {
+            String email = principal.getName();
+            Usuario usuario = usuarioService.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            usuarioService.eliminarCuentaPermanentemente(usuario.getId(), eliminarCuentaDTO);
+            
+            // Redirigir al login con mensaje de cuenta eliminada
+            redirectAttributes.addFlashAttribute("mensajeEliminacion", "Tu cuenta ha sido eliminada permanentemente");
+            return "redirect:/login?cuentaEliminada";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorEliminacion", e.getMessage());
+            return "redirect:/perfil";
         }
     }
 }
