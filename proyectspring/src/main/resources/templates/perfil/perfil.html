@@ -12,41 +12,6 @@
 
     <!-- CONTENIDO PRINCIPAL -->
     <div class="container py-5">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/dashboard}" href="/dashboard">
-                <img th:src="@{/image/factura.png}" src="/image/factura.png" alt="PocketBook" width="30" height="24">
-                <span class="fw-bold">PocketBook</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" th:href="@{/dashboard}" href="/dashboard">
-                            <i class="bi bi-house-door"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle fs-5"></i>
-                            <span>Usuario</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item active" th:href="@{/perfil}" href="/perfil"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
-                            <li><a class="dropdown-item" th:href="@{/configuracion}" href="/configuracion"><i class="bi bi-gear me-2"></i>Configuración</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" th:href="@{/login}" href="/login"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="container py-5">
         <div class="row">
             <!-- COLUMNA IZQUIERDA - INFO USUARIO -->
             <div class="col-lg-4 mb-4">
@@ -63,8 +28,8 @@
                         </div>
                         
                         <!-- Nombre y email -->
-                        <h4 class="fw-bold mb-1">Nombre Usuario</h4>
-                        <p class="text-muted mb-3">usuario@email.com</p>
+                        <h4 class="fw-bold mb-1" th:text="${usuario.nombre} + ' ' + (${usuario.apellido} ?: '')">Nombre Usuario</h4>
+                        <p class="text-muted mb-3" th:text="${usuario.email}">usuario@email.com</p>
                         
                         <!-- Estadísticas rápidas -->
                         <div class="row g-3 text-center mb-4">
@@ -88,7 +53,7 @@
                             <div class="info-item mb-3">
                                 <i class="bi bi-calendar3 text-primary me-2"></i>
                                 <small class="text-muted">Miembro desde: </small>
-                                <strong>Enero 2025</strong>
+                                <strong th:text="${usuario.fechaRegistro != null ? #temporals.format(usuario.fechaRegistro, 'MMMM yyyy') : 'Enero 2025'}">Enero 2025</strong>
                             </div>
                             <div class="info-item mb-3">
                                 <i class="bi bi-shield-check text-success me-2"></i>
@@ -98,7 +63,7 @@
                             <div class="info-item">
                                 <i class="bi bi-geo-alt text-warning me-2"></i>
                                 <small class="text-muted">Ubicación: </small>
-                                <strong>No especificada</strong>
+                                <strong th:text="${usuario.pais != null && !usuario.pais.isEmpty() ? usuario.pais : 'No especificada'}">No especificada</strong>
                             </div>
                         </div>
                     </div>
@@ -133,42 +98,56 @@
                                 </h5>
                             </div>
                             <div class="card-body p-4">
-                                <form>
+                                <!-- Mensaje de éxito -->
+                                <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    <span th:text="${mensaje}"></span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                                
+                                <!-- Mensaje de error -->
+                                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <span th:text="${error}"></span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                                
+                                <form th:action="@{/perfil/actualizar}" th:object="${perfilDTO}" method="post">
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label for="nombre" class="form-label fw-semibold">Nombre</label>
-                                            <input type="text" class="form-control" id="nombre" placeholder="Juan">
+                                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Juan">
+                                            <small class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="apellido" class="form-label fw-semibold">Apellido</label>
-                                            <input type="text" class="form-control" id="apellido" placeholder="Pérez">
+                                            <input type="text" class="form-control" id="apellido" th:field="*{apellido}" placeholder="Pérez">
+                                            <small class="text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="email" class="form-label fw-semibold">Email</label>
-                                            <input type="email" class="form-control" id="email" placeholder="usuario@email.com">
+                                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="usuario@email.com" readonly>
+                                            <small class="text-muted">El email no se puede modificar</small>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="telefono" class="form-label fw-semibold">Teléfono</label>
-                                            <input type="tel" class="form-control" id="telefono" placeholder="+56 9 1234 5678">
+                                            <input type="tel" class="form-control" id="telefono" th:field="*{telefono}" placeholder="+56 9 1234 5678">
+                                            <small class="text-danger" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></small>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="fecha_nacimiento" class="form-label fw-semibold">Fecha de Nacimiento</label>
-                                            <input type="date" class="form-control" id="fecha_nacimiento">
+                                            <label for="fechaNacimiento" class="form-label fw-semibold">Fecha de Nacimiento</label>
+                                            <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}">
                                         </div>
                                         <div class="col-md-6">
                                             <label for="pais" class="form-label fw-semibold">País</label>
-                                            <select class="form-select" id="pais">
-                                                <option selected>Seleccionar...</option>
-                                                <option value="CL">Chile</option>
-                                                <option value="AR">Argentina</option>
-                                                <option value="PE">Perú</option>
-                                                <option value="CO">Colombia</option>
-                                                <option value="MX">México</option>
-                                            </select>
+                                            <input type="text" class="form-control" id="pais" th:field="*{pais}" placeholder="Ej: Chile">
+                                            <small class="text-danger" th:if="${#fields.hasErrors('pais')}" th:errors="*{pais}"></small>
                                         </div>
                                         <div class="col-12">
-                                            <label for="bio" class="form-label fw-semibold">Biografía</label>
-                                            <textarea class="form-control" id="bio" rows="3" placeholder="Cuéntanos algo sobre ti..."></textarea>
+                                            <label for="biografia" class="form-label fw-semibold">Biografía</label>
+                                            <textarea class="form-control" id="biografia" th:field="*{biografia}" rows="3" placeholder="Cuéntanos algo sobre ti..." maxlength="500"></textarea>
+                                            <small class="text-muted">Máximo 500 caracteres</small>
+                                            <small class="text-danger d-block" th:if="${#fields.hasErrors('biografia')}" th:errors="*{biografia}"></small>
                                         </div>
                                     </div>
                                     <div class="mt-4 d-flex gap-2">

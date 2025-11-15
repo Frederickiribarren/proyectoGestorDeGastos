@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.proyectspring.dao.IUsuarioDao;
+import com.example.proyectspring.dto.PerfilDTO;
 import com.example.proyectspring.dto.RegistroDTO;
 import com.example.proyectspring.entity.Usuario;
 import com.example.proyectspring.service.UsuarioService;
@@ -90,6 +91,35 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional
     public void eliminarUsuario(Long id) {
         usuarioDao.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public Usuario actualizarPerfil(Long id, PerfilDTO perfilDTO) {
+        Usuario usuario = usuarioDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        // Actualizar solo los campos proporcionados
+        if (perfilDTO.getNombre() != null && !perfilDTO.getNombre().isEmpty()) {
+            usuario.setNombre(perfilDTO.getNombre());
+        }
+        if (perfilDTO.getApellido() != null && !perfilDTO.getApellido().isEmpty()) {
+            usuario.setApellido(perfilDTO.getApellido());
+        }
+        if (perfilDTO.getTelefono() != null) {
+            usuario.setTelefono(perfilDTO.getTelefono());
+        }
+        if (perfilDTO.getPais() != null) {
+            usuario.setPais(perfilDTO.getPais());
+        }
+        if (perfilDTO.getBiografia() != null) {
+            usuario.setBiografia(perfilDTO.getBiografia());
+        }
+        if (perfilDTO.getFechaNacimiento() != null) {
+            usuario.setFechaNacimiento(perfilDTO.getFechaNacimiento());
+        }
+        
+        return usuarioDao.save(usuario);
     }
 
     // Métodos legacy para compatibilidad
