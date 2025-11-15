@@ -43,11 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Función para mostrar campo válido
+    // Función para mostrar campo válido (sin borde verde)
     function showFieldValid(field, errorElement) {
         if (field) {
-            field.classList.remove('is-invalid');
-            field.classList.add('is-valid');
+            field.classList.remove('is-invalid', 'is-valid');
         }
         if (errorElement) {
             errorElement.textContent = '';
@@ -62,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailError.textContent = '';
                 emailError.classList.remove('text-danger');
             }
-            email.classList.remove('is-invalid');
+            email.classList.remove('is-invalid', 'is-valid');
         });
     }
 
@@ -72,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 passError.textContent = '';
                 passError.classList.remove('text-danger');
             }
-            pass.classList.remove('is-invalid');
+            pass.classList.remove('is-invalid', 'is-valid');
         });
     }
 

@@ -1,9 +1,11 @@
 package com.example.proyectspring.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,12 +26,23 @@ public class Usuario {
     private String nombre;
     private String rut;
     private String apellido;
+    
+    @Column(unique = true)
     private String email;
+    
     private String password;
     private String rol;
+    
+    @Column(name = "fecha_registro")
+    private LocalDateTime fechaRegistro;
+    
+    @Column(name = "activo")
+    private boolean activo = true;
+    
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd-MM-yyy")
     private Date creatAt;
+    
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd-MM-yyy")
     private Date updateAt;
@@ -37,6 +50,9 @@ public class Usuario {
     @PrePersist
     protected void prePersist() {
         this.creatAt = new Date();
+        if (this.fechaRegistro == null) {
+            this.fechaRegistro = LocalDateTime.now();
+        }
     }
 
     @PreUpdate
@@ -44,6 +60,10 @@ public class Usuario {
         this.updateAt = new Date();
     }
 
+    // Constructor vacío
+    public Usuario() {}
+
+    // Constructor con parámetros
     public Usuario(String nombre, String rut, String apellido, String email, String password, String rol) {
         this.nombre = nombre;
         this.rut = rut;
@@ -51,7 +71,15 @@ public class Usuario {
         this.email = email;
         this.password = password;
         this.rol = rol;
-       
+    }
+
+    // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -97,9 +125,24 @@ public class Usuario {
     public String getRol() {
         return rol;
     }
-
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public Date getCreatAt() {
