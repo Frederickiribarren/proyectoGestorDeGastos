@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.proyectspring.dao.IUsuarioDao;
 import com.example.proyectspring.dto.PerfilDTO;
 import com.example.proyectspring.dto.RegistroDTO;
+import com.example.proyectspring.dto.SeguridadDTO;
+import com.example.proyectspring.dto.EliminarCuentaDTO;
 import com.example.proyectspring.entity.Usuario;
 import com.example.proyectspring.service.UsuarioService;
 
@@ -21,7 +22,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final IUsuarioDao usuarioDao;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public UsuarioServiceImpl(IUsuarioDao usuarioDao, PasswordEncoder passwordEncoder) {
         this.usuarioDao = usuarioDao;
         this.passwordEncoder = passwordEncoder;
@@ -120,6 +120,81 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         
         return usuarioDao.save(usuario);
+    }
+
+    // Métodos de seguridad
+    @Override
+    @Transactional
+    public boolean cambiarPassword(Long id, SeguridadDTO seguridadDTO) {
+        Usuario usuario = usuarioDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        // Verificar que la contraseña actual sea correcta
+        if (!passwordEncoder.matches(seguridadDTO.getPasswordActual(), usuario.getPassword())) {
+            return false;
+        }
+        
+        // Verificar que las nuevas contraseñas coincidan
+        if (!seguridadDTO.getNuevaPassword().equals(seguridadDTO.getConfirmarPassword())) {
+            return false;
+        }
+        
+        // Actualizar contraseña
+        usuario.setPassword(passwordEncoder.encode(seguridadDTO.getNuevaPassword()));
+        
+        usuarioDao.save(usuario);
+        return true;
+    }
+    
+    @Override
+    @Transactional
+    public boolean configurarPalabraSeguridad(Long id, String palabraSeguridad) {
+        Usuario usuario = usuarioDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        usuario.setPalabraSeguridad(passwordEncoder.encode(palabraSeguridad));
+        usuarioDao.save(usuario);
+        return true;
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public boolean verificarPalabraSeguridad(Long id, String palabraSeguridad) {
+        Usuario usuario = usuarioDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        if (usuario.getPalabraSeguridad() == null) {
+            return false;
+        }
+        
+        return passwordEncoder.matches(palabraSeguridad, usuario.getPalabraSeguridad());
+    }
+    
+    @Override
+    @Transactional
+    public void eliminarCuentaPermanentemente(Long id, EliminarCuentaDTO eliminarCuentaDTO) throws Exception {
+        Usuario usuario = usuarioDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        // Verificar confirmación
+        if (!eliminarCuentaDTO.isConfirmarEliminacion()) {
+            throw new Exception("Debe confirmar la eliminación de la cuenta");
+        }
+        
+        // Verificar contraseña
+        if (!passwordEncoder.matches(eliminarCuentaDTO.getPassword(), usuario.getPassword())) {
+            throw new Exception("Contraseña incorrecta");
+        }
+        
+        // Verificar palabra de seguridad
+        if (usuario.getPalabraSeguridad() != null) {
+            if (!passwordEncoder.matches(eliminarCuentaDTO.getPalabraSeguridad(), usuario.getPalabraSeguridad())) {
+                throw new Exception("Palabra de seguridad incorrecta");
+            }
+        }
+        
+        // Eliminar permanentemente
+        usuarioDao.deleteById(id);
     }
 
     // Métodos legacy para compatibilidad
