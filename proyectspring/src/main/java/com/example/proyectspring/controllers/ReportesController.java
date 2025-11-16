@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,13 +39,13 @@ public class ReportesController {
         }
 
         String email = auth.getName();
-        Usuario usuario = usuarioService.buscarPorEmail(email);
+        Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
 
-        if (usuario == null) {
+        if (usuarioOpt.isEmpty()) {
             return "redirect:/login";
         }
 
-        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuario", usuarioOpt.get());
         return "reportes/reportes";
     }
 
@@ -54,7 +53,13 @@ public class ReportesController {
     @ResponseBody
     public Map<String, Object> getDatosMensuales(Authentication auth) {
         String email = auth.getName();
-        Usuario usuario = usuarioService.buscarPorEmail(email);
+        Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
+        
+        if (usuarioOpt.isEmpty()) {
+            return new HashMap<>();
+        }
+        
+        Usuario usuario = usuarioOpt.get();
 
         // Obtener últimos 6 meses
         List<String> meses = new ArrayList<>();
@@ -68,20 +73,18 @@ public class ReportesController {
             meses.add(mes.getMonth().toString().substring(0, 3) + " " + mes.getYear());
 
             // Calcular gastos del mes
-            double totalGastos = ingresosService.listarGastosPorUsuario(usuario).stream()
+            double totalGastos = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
                     .filter(gasto -> {
-                        LocalDate fecha = gasto.getFecha().toInstant()
-                                .atZone(ZoneId.systemDefault()).toLocalDate();
+                        LocalDate fecha = gasto.getFecha();
                         return YearMonth.from(fecha).equals(mes);
                     })
                     .mapToDouble(Ingresos::getMonto)
                     .sum();
 
             // Calcular ingresos del mes
-            double totalIngresos = ingresoMonetarioService.listarIngresosPorUsuario(usuario).stream()
+            double totalIngresos = ingresoMonetarioService.obtenerIngresosPorUsuario(usuario).stream()
                     .filter(ingreso -> {
-                        LocalDate fecha = ingreso.getFecha().toInstant()
-                                .atZone(ZoneId.systemDefault()).toLocalDate();
+                        LocalDate fecha = ingreso.getFecha();
                         return YearMonth.from(fecha).equals(mes);
                     })
                     .mapToDouble(IngresoMonetario::getMonto)
@@ -103,14 +106,18 @@ public class ReportesController {
     @ResponseBody
     public Map<String, Object> getCategoriasGastos(Authentication auth) {
         String email = auth.getName();
-        Usuario usuario = usuarioService.buscarPorEmail(email);
-
+        Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
+        
+        if (usuarioOpt.isEmpty()) {
+            return new HashMap<>();
+        }
+        
+        Usuario usuario = usuarioOpt.get();
         YearMonth mesActual = YearMonth.now();
 
-        Map<String, Double> categorias = ingresosService.listarGastosPorUsuario(usuario).stream()
+        Map<String, Double> categorias = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(gasto -> {
-                    LocalDate fecha = gasto.getFecha().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fecha = gasto.getFecha();
                     return YearMonth.from(fecha).equals(mesActual);
                 })
                 .collect(Collectors.groupingBy(
@@ -132,14 +139,18 @@ public class ReportesController {
     @ResponseBody
     public Map<String, Object> getMetodosPago(Authentication auth) {
         String email = auth.getName();
-        Usuario usuario = usuarioService.buscarPorEmail(email);
-
+        Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
+        
+        if (usuarioOpt.isEmpty()) {
+            return new HashMap<>();
+        }
+        
+        Usuario usuario = usuarioOpt.get();
         YearMonth mesActual = YearMonth.now();
 
-        Map<String, Double> metodos = ingresosService.listarGastosPorUsuario(usuario).stream()
+        Map<String, Double> metodos = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(gasto -> {
-                    LocalDate fecha = gasto.getFecha().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fecha = gasto.getFecha();
                     return YearMonth.from(fecha).equals(mesActual);
                 })
                 .collect(Collectors.groupingBy(
@@ -161,14 +172,18 @@ public class ReportesController {
     @ResponseBody
     public Map<String, Object> getTiposIngreso(Authentication auth) {
         String email = auth.getName();
-        Usuario usuario = usuarioService.buscarPorEmail(email);
-
+        Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
+        
+        if (usuarioOpt.isEmpty()) {
+            return new HashMap<>();
+        }
+        
+        Usuario usuario = usuarioOpt.get();
         YearMonth mesActual = YearMonth.now();
 
-        Map<String, Double> tipos = ingresoMonetarioService.listarIngresosPorUsuario(usuario).stream()
+        Map<String, Double> tipos = ingresoMonetarioService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(ingreso -> {
-                    LocalDate fecha = ingreso.getFecha().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fecha = ingreso.getFecha();
                     return YearMonth.from(fecha).equals(mesActual);
                 })
                 .collect(Collectors.groupingBy(
@@ -190,43 +205,44 @@ public class ReportesController {
     @ResponseBody
     public Map<String, Object> getEstadisticasMes(Authentication auth) {
         String email = auth.getName();
-        Usuario usuario = usuarioService.buscarPorEmail(email);
-
+        Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
+        
+        if (usuarioOpt.isEmpty()) {
+            return new HashMap<>();
+        }
+        
+        Usuario usuario = usuarioOpt.get();
         YearMonth mesActual = YearMonth.now();
 
         // Total gastos del mes
-        double totalGastos = ingresosService.listarGastosPorUsuario(usuario).stream()
+        double totalGastos = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(gasto -> {
-                    LocalDate fecha = gasto.getFecha().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fecha = gasto.getFecha();
                     return YearMonth.from(fecha).equals(mesActual);
                 })
                 .mapToDouble(Ingresos::getMonto)
                 .sum();
 
         // Total ingresos del mes
-        double totalIngresos = ingresoMonetarioService.listarIngresosPorUsuario(usuario).stream()
+        double totalIngresos = ingresoMonetarioService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(ingreso -> {
-                    LocalDate fecha = ingreso.getFecha().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fecha = ingreso.getFecha();
                     return YearMonth.from(fecha).equals(mesActual);
                 })
                 .mapToDouble(IngresoMonetario::getMonto)
                 .sum();
 
         // Conteo de transacciones
-        long cantidadGastos = ingresosService.listarGastosPorUsuario(usuario).stream()
+        long cantidadGastos = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(gasto -> {
-                    LocalDate fecha = gasto.getFecha().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fecha = gasto.getFecha();
                     return YearMonth.from(fecha).equals(mesActual);
                 })
                 .count();
 
-        long cantidadIngresos = ingresoMonetarioService.listarIngresosPorUsuario(usuario).stream()
+        long cantidadIngresos = ingresoMonetarioService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(ingreso -> {
-                    LocalDate fecha = ingreso.getFecha().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fecha = ingreso.getFecha();
                     return YearMonth.from(fecha).equals(mesActual);
                 })
                 .count();
