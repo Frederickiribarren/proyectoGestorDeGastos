@@ -5,6 +5,70 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('modalNuevoGasto');
     const fechaInput = document.getElementById('fecha');
     
+    // Modal de eliminación
+    const modalEliminar = document.getElementById('modalEliminarGasto');
+    const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
+    let gastoIdAEliminar = null;
+    
+    // Event listener para cuando se abre el modal de eliminación
+    if (modalEliminar) {
+        modalEliminar.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            gastoIdAEliminar = button.getAttribute('data-gasto-id');
+            const descripcion = button.getAttribute('data-gasto-descripcion');
+            const monto = button.getAttribute('data-gasto-monto');
+            
+            document.getElementById('gastoDescripcion').textContent = descripcion;
+            document.getElementById('gastoMonto').textContent = '$' + parseFloat(monto).toLocaleString('es-CL') + ' CLP';
+        });
+    }
+    
+    // Event listener para confirmar eliminación
+    if (btnConfirmarEliminar) {
+        btnConfirmarEliminar.addEventListener('click', async function() {
+            if (!gastoIdAEliminar) return;
+            
+            // Deshabilitar botón mientras se elimina
+            btnConfirmarEliminar.disabled = true;
+            btnConfirmarEliminar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Eliminando...';
+            
+            try {
+                // Obtener token CSRF
+                const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+                
+                const headers = {};
+                if (csrfToken && csrfHeader) {
+                    headers[csrfHeader] = csrfToken;
+                }
+                
+                const response = await fetch(`/gastos/eliminar/${gastoIdAEliminar}`, {
+                    method: 'DELETE',
+                    headers: headers
+                });
+                
+                if (response.ok) {
+                    // Cerrar modal
+                    const modalInstance = bootstrap.Modal.getInstance(modalEliminar);
+                    modalInstance.hide();
+                    
+                    // Recargar la página para mostrar los datos actualizados
+                    window.location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error al eliminar: ' + error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión al eliminar el gasto');
+            } finally {
+                // Rehabilitar botón
+                btnConfirmarEliminar.disabled = false;
+                btnConfirmarEliminar.innerHTML = '<i class="bi bi-trash me-1"></i>Eliminar Gasto';
+            }
+        });
+    }
+    
     // Dropdown personalizado para método de pago
     const dropdownItems = document.querySelectorAll('.dropdown-menu .dropdown-item');
     const selectedMetodo = document.getElementById('selectedMetodo');
@@ -206,40 +270,62 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Evento del botón guardar
     if (btnGuardar) {
-        btnGuardar.addEventListener('click', function(e) {
+        btnGuardar.addEventListener('click', async function(e) {
             e.preventDefault();
             
             if (validarFormulario()) {
-                // Crear objeto gasto
-                const formData = new FormData(form);
-                const nuevoGasto = {
-                    id: contadorId++,
-                    descripcion: formData.get('descripcion'),
-                    monto: parseFloat(formData.get('monto')),
-                    fecha: formData.get('fecha'),
-                    categoria: formData.get('categoria'),
-                    metodoPago: formData.get('metodoPago'),
-                    notas: formData.get('notas') || ''
-                };
+                // Deshabilitar botón mientras se guarda
+                btnGuardar.disabled = true;
+                btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Guardando...';
                 
-                // Agregar a la lista
-                gastos.push(nuevoGasto);
-                
-                // Actualizar tabla
-                actualizarTabla();
-                
-                // Cerrar modal y limpiar formulario
-                const modalInstance = bootstrap.Modal.getInstance(modal);
-                modalInstance.hide();
-                form.reset();
-                limpiarErrores();
-                
-                // Establecer fecha actual nuevamente
-                const hoy = new Date().toISOString().split('T')[0];
-                fechaInput.value = hoy;
-                
-                // Mostrar notificación
-                mostrarNotificacion('success', '✅ Gasto registrado exitosamente');
+                try {
+                    // Crear objeto gasto
+                    const formData = new FormData(form);
+                    const nuevoGasto = {
+                        descripcion: formData.get('descripcion'),
+                        monto: parseFloat(formData.get('monto')),
+                        fecha: formData.get('fecha'),
+                        categoria: formData.get('categoria'),
+                        metodoPago: formData.get('metodoPago'),
+                        notaAdicional: formData.get('notas') || ''
+                    };
+                    
+                    // Obtener token CSRF
+                    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+                    
+                    // Enviar al servidor
+                    const headers = {
+                        'Content-Type': 'application/json',
+                    };
+                    
+                    if (csrfToken && csrfHeader) {
+                        headers[csrfHeader] = csrfToken;
+                    }
+                    
+                    const response = await fetch('/gastos/guardar', {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(nuevoGasto)
+                    });
+                    
+                    if (response.ok) {
+                        const gastoGuardado = await response.json();
+                        
+                        // Recargar la página para mostrar los datos actualizados
+                        window.location.reload();
+                    } else {
+                        const error = await response.text();
+                        mostrarNotificacion('error', '❌ Error al guardar: ' + error);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    mostrarNotificacion('error', '❌ Error de conexión al guardar el gasto');
+                } finally {
+                    // Rehabilitar botón
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerHTML = '<i class="bi bi-save me-1"></i>Guardar Gasto';
+                }
             } else {
                 // Hacer scroll al primer error
                 const primerError = form.querySelector('.is-invalid');
@@ -402,17 +488,6 @@ document.addEventListener('DOMContentLoaded', function() {
                   `Categoría: ${cat.icono} ${cat.nombre}\n` +
                   `Método de Pago: ${pago.icono} ${pago.nombre}\n` +
                   (gasto.notas ? `Notas: ${gasto.notas}` : ''));
-        }
-    };
-    
-    window.eliminarGasto = function(id) {
-        if (confirm('¿Está seguro de eliminar este gasto?')) {
-            const index = gastos.findIndex(g => g.id === id);
-            if (index !== -1) {
-                gastos.splice(index, 1);
-                actualizarTabla();
-                mostrarNotificacion('warning', '🗑️ Gasto eliminado');
-            }
         }
     };
     

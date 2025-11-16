@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN -->
+<div th:fragment="modalEliminarGasto" class="modal fade" id="modalEliminarGasto" tabindex="-1" aria-labelledby="modalEliminarGastoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title fw-bold" id="modalEliminarGastoLabel">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Confirmar Eliminación
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="text-center mb-3">
+          <i class="bi bi-trash text-danger" style="font-size: 3rem;"></i>
+        </div>
+        <p class="text-center mb-3">¿Está seguro que desea eliminar este gasto?</p>
+        <div class="card bg-light border-0 mb-3">
+          <div class="card-body">
+            <p class="mb-2"><strong>Descripción:</strong> <span id="gastoDescripcion"></span></p>
+            <p class="mb-0"><strong>Monto:</strong> <span id="gastoMonto" class="text-danger fw-bold"></span></p>
+          </div>
+        </div>
+        <div class="alert alert-warning mb-0">
+          <i class="bi bi-info-circle me-2"></i>
+          Esta acción no se puede deshacer.
+        </div>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i>
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">
+          <i class="bi bi-trash me-1"></i>
+          Eliminar Gasto
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</html>

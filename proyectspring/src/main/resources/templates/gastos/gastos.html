@@ -119,7 +119,6 @@
                 <i class="bi bi-list-ul text-primary me-2"></i>
                 Lista de Gastos
               </h5>
-              <span class="badge bg-primary rounded-pill" id="totalGastos">0 gastos</span>
             </div>
           </div>
           <div class="card-body p-0">
@@ -137,8 +136,33 @@
                   </tr>
                 </thead>
                 <tbody id="tbodyGastos">
-                  <!-- Los gastos se agregarán dinámicamente aquí -->
-                  <tr id="emptyState">
+                  <!-- Gastos desde la base de datos -->
+                  <tr th:if="${gastos != null and !gastos.isEmpty()}" th:each="gasto, iterStat : ${gastos}">
+                    <td class="ps-4" th:text="${iterStat.count}">1</td>
+                    <td th:text="${#temporals.format(gasto.fecha, 'dd/MM/yyyy')}">01/11/2024</td>
+                    <td th:text="${gasto.descripcion}">Descripción</td>
+                    <td>
+                      <span class="badge badge-categoria" 
+                            th:classappend="${'badge-' + gasto.categoria}"
+                            th:text="${gasto.categoria}">Categoría</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-pago badge-debito" th:text="${gasto.metodoPago}">Método</span>
+                    </td>
+                    <td class="text-end fw-semibold" th:text="${'$' + #numbers.formatDecimal(gasto.monto, 0, 'POINT', 0, 'COMMA') + ' CLP'}">$0 CLP</td>
+                    <td class="text-center">
+                      <button class="btn btn-sm btn-danger btn-action" 
+                              data-bs-toggle="modal" 
+                              data-bs-target="#modalEliminarGasto" 
+                              th:attr="data-gasto-id=${gasto.id}, data-gasto-descripcion=${gasto.descripcion}, data-gasto-monto=${gasto.monto}"
+                              title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  
+                  <!-- Estado vacío si no hay gastos -->
+                  <tr th:if="${gastos == null or gastos.isEmpty()}" id="emptyState">
                     <td colspan="7" class="text-center py-5 text-muted">
                       <i class="bi bi-inbox fs-1 d-block mb-3"></i>
                       <p class="mb-0">No hay gastos registrados</p>
@@ -149,7 +173,12 @@
                 <tfoot class="table-light fw-bold">
                   <tr>
                     <td colspan="5" class="text-end pe-4">TOTAL:</td>
-                    <td class="text-end text-primary fs-5" id="montoTotal">$0 CLP</td>
+                    <td class="text-end text-primary fs-5" id="montoTotal">
+                      <span th:if="${gastos != null and !gastos.isEmpty()}">
+                        $[[${#aggregates.sum(gastos.![monto])}]] CLP
+                      </span>
+                      <span th:if="${gastos == null or gastos.isEmpty()}">$0 CLP</span>
+                    </td>
                     <td></td>
                   </tr>
                 </tfoot>
@@ -195,6 +224,9 @@
 
   <!-- INCLUIR MODAL DE NUEVO GASTO -->
   <div th:replace="~{fragments/ingresoGastos :: modalNuevoGasto}"></div>
+
+  <!-- INCLUIR MODAL DE ELIMINACIÓN -->
+  <div th:replace="~{fragments/eliminarGasto :: modalEliminarGasto}"></div>
 
   <!-- SCRIPTS -->
   <div th:replace="~{fragments/scripts :: scripts}"></div>
