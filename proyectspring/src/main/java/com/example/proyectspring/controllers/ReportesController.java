@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 
 @Controller
 @RequestMapping("/reportes")
@@ -270,6 +271,69 @@ public class ReportesController {
         response.put("promedioGastosDiario", promedioGastosDiario);
         response.put("promedioIngresosDiario", promedioIngresosDiario);
 
+        return response;
+    }
+
+    @GetMapping("/meses-con-datos")
+    @ResponseBody
+    public Map<String, Object> getMesesConDatos(Authentication auth) {
+        String email = auth.getName();
+        Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
+        
+        if (usuarioOpt.isEmpty()) {
+            return new HashMap<>();
+        }
+        
+        Usuario usuario = usuarioOpt.get();
+        
+        // Obtener todos los meses con gastos
+        Set<YearMonth> mesesConGastos = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
+                .map(gasto -> YearMonth.from(gasto.getFecha()))
+                .collect(Collectors.toSet());
+        
+        // Obtener todos los meses con ingresos
+        Set<YearMonth> mesesConIngresos = ingresoMonetarioService.obtenerIngresosPorUsuario(usuario).stream()
+                .map(ingreso -> YearMonth.from(ingreso.getFecha()))
+                .collect(Collectors.toSet());
+        
+        // Unir ambos conjuntos
+        Set<YearMonth> todosMeses = new HashSet<>();
+        todosMeses.addAll(mesesConGastos);
+        todosMeses.addAll(mesesConIngresos);
+        
+        // Obtener años únicos
+        Set<Integer> anios = todosMeses.stream()
+                .map(YearMonth::getYear)
+                .collect(Collectors.toSet());
+        
+        // Convertir a lista ordenada
+        List<Integer> aniosOrdenados = anios.stream()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        
+        // Agrupar meses por año
+        Map<Integer, List<Map<String, Object>>> mesesPorAnio = new LinkedHashMap<>();
+        
+        for (Integer anio : aniosOrdenados) {
+            List<Map<String, Object>> mesesDelAnio = todosMeses.stream()
+                    .filter(ym -> ym.getYear() == anio)
+                    .sorted(Comparator.reverseOrder())
+                    .map(ym -> {
+                        Map<String, Object> mesData = new HashMap<>();
+                        mesData.put("mes", ym.getMonthValue());
+                        mesData.put("anio", ym.getYear());
+                        mesData.put("nombre", ym.getMonth().toString());
+                        return mesData;
+                    })
+                    .collect(Collectors.toList());
+            
+            mesesPorAnio.put(anio, mesesDelAnio);
+        }
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("anios", aniosOrdenados);
+        response.put("mesesPorAnio", mesesPorAnio);
+        
         return response;
     }
     

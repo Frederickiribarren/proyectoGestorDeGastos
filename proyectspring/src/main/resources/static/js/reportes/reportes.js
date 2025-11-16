@@ -34,6 +34,7 @@ let chartGastosIngresos, chartCategorias, chartMetodosPago, chartTiposIngreso, c
 // Variable para el mes seleccionado (por defecto el actual)
 let mesSeleccionado = null;
 let anioSeleccionado = null;
+let mesesConDatosCache = null; // Cache de meses con datos
 
 // Cargar datos al iniciar
 document.addEventListener('DOMContentLoaded', function() {
@@ -42,24 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
     mesSeleccionado = hoy.getMonth() + 1; // getMonth() retorna 0-11
     anioSeleccionado = hoy.getFullYear();
     
-    // Poblar filtro de meses
-    poblarFiltroMeses();
-    
-    // Agregar evento al filtro de mes
-    document.getElementById('filtroMesReporte').addEventListener('change', function() {
-        const valor = this.value;
-        if (valor) {
-            const [anio, mes] = valor.split('-');
-            anioSeleccionado = parseInt(anio);
-            mesSeleccionado = parseInt(mes);
-            
-            // Recargar todos los gráficos con el nuevo mes
-            cargarEstadisticas();
-            cargarGraficoCategorias();
-            cargarGraficoMetodosPago();
-            cargarGraficoTiposIngreso();
-        }
-    });
+    // Cargar meses con datos y poblar filtros
+    cargarMesesConDatos();
     
     cargarEstadisticas();
     cargarGraficoGastosIngresos();
@@ -68,28 +53,133 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarGraficoTiposIngreso();
 });
 
-// Poblar filtro de meses
+// Cargar meses que tienen datos
+async function cargarMesesConDatos() {
+    try {
+        const response = await fetch('/reportes/meses-con-datos');
+        mesesConDatosCache = await response.json();
+        
+        poblarFiltroAnios();
+        poblarFiltroMeses();
+        configurarEventos();
+    } catch (error) {
+        console.error('Error al cargar meses con datos:', error);
+        // Si falla, usar mes actual
+        poblarFiltroAnios();
+        poblarFiltroMeses();
+        configurarEventos();
+    }
+}
+
+// Poblar filtro de años
+function poblarFiltroAnios() {
+    const filtroAnio = document.getElementById('filtroAnioReporte');
+    filtroAnio.innerHTML = '';
+    
+    const hoy = new Date();
+    const anioActual = hoy.getFullYear();
+    
+    if (mesesConDatosCache && mesesConDatosCache.anios && mesesConDatosCache.anios.length > 0) {
+        // Usar años con datos
+        mesesConDatosCache.anios.forEach(anio => {
+            const option = document.createElement('option');
+            option.value = anio;
+            option.textContent = anio;
+            if (anio === anioSeleccionado) {
+                option.selected = true;
+            }
+            filtroAnio.appendChild(option);
+        });
+    } else {
+        // Si no hay datos, mostrar solo el año actual
+        const option = document.createElement('option');
+        option.value = anioActual;
+        option.textContent = anioActual;
+        option.selected = true;
+        filtroAnio.appendChild(option);
+    }
+}
+
+// Poblar filtro de meses según el año seleccionado
 function poblarFiltroMeses() {
     const filtroMes = document.getElementById('filtroMesReporte');
+    filtroMes.innerHTML = '';
+    
     const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     
-    const fechaActual = new Date();
-    const mesActual = fechaActual.getMonth();
-    const anioActual = fechaActual.getFullYear();
+    const hoy = new Date();
+    const mesActual = hoy.getMonth() + 1;
+    const anioActual = hoy.getFullYear();
     
-    // Generar últimos 12 meses
-    for (let i = 0; i < 12; i++) {
-        const mes = (mesActual - i + 12) % 12;
-        const anio = mesActual - i < 0 ? anioActual - 1 : anioActual;
-        const option = document.createElement('option');
-        option.value = `${anio}-${String(mes + 1).padStart(2, '0')}`;
-        option.textContent = `${meses[mes]} ${anio}`;
-        filtroMes.appendChild(option);
+    if (mesesConDatosCache && mesesConDatosCache.mesesPorAnio && 
+        mesesConDatosCache.mesesPorAnio[anioSeleccionado]) {
+        // Usar meses con datos del año seleccionado
+        const mesesDelAnio = mesesConDatosCache.mesesPorAnio[anioSeleccionado];
+        
+        mesesDelAnio.forEach(mesData => {
+            const option = document.createElement('option');
+            option.value = `${mesData.anio}-${String(mesData.mes).padStart(2, '0')}`;
+            option.textContent = `${meses[mesData.mes - 1]} ${mesData.anio}`;
+            
+            if (mesData.mes === mesSeleccionado && mesData.anio === anioSeleccionado) {
+                option.selected = true;
+            }
+            
+            filtroMes.appendChild(option);
+        });
+    } else {
+        // Si no hay datos para el año, mostrar el mes actual si es el año actual
+        if (anioSeleccionado === anioActual) {
+            const option = document.createElement('option');
+            option.value = `${anioActual}-${String(mesActual).padStart(2, '0')}`;
+            option.textContent = `${meses[mesActual - 1]} ${anioActual}`;
+            option.selected = true;
+            filtroMes.appendChild(option);
+        }
     }
+}
+
+// Configurar eventos de los filtros
+function configurarEventos() {
+    // Evento al cambiar año
+    document.getElementById('filtroAnioReporte').addEventListener('change', function() {
+        anioSeleccionado = parseInt(this.value);
+        
+        // Actualizar meses disponibles para el año seleccionado
+        poblarFiltroMeses();
+        
+        // Si hay meses disponibles, tomar el primero (más reciente)
+        const filtroMes = document.getElementById('filtroMesReporte');
+        if (filtroMes.options.length > 0) {
+            const primerMes = filtroMes.options[0].value;
+            const [anio, mes] = primerMes.split('-');
+            mesSeleccionado = parseInt(mes);
+            filtroMes.value = primerMes;
+            
+            recargarGraficos();
+        }
+    });
     
-    // Seleccionar mes actual por defecto
-    filtroMes.value = `${anioActual}-${String(mesActual + 1).padStart(2, '0')}`;
+    // Evento al cambiar mes
+    document.getElementById('filtroMesReporte').addEventListener('change', function() {
+        const valor = this.value;
+        if (valor) {
+            const [anio, mes] = valor.split('-');
+            anioSeleccionado = parseInt(anio);
+            mesSeleccionado = parseInt(mes);
+            
+            recargarGraficos();
+        }
+    });
+}
+
+// Recargar todos los gráficos
+function recargarGraficos() {
+    cargarEstadisticas();
+    cargarGraficoCategorias();
+    cargarGraficoMetodosPago();
+    cargarGraficoTiposIngreso();
 }
 
 // Cargar estadísticas generales
