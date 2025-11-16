@@ -22,24 +22,21 @@
 <main class="form-signin d-flex flex-column align-items-center flex-grow-1 image-central">
   
   <!-- MENSAJE DE ÉXITO DESDE REGISTRO -->
-  <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert" style="width: 350px; margin-bottom: 1rem;">
+  <div th:if="${mensajeExito}" class="alert alert-success fade show" role="alert" style="width: 350px; margin-bottom: 1rem;">
     <i class="bi bi-check-circle-fill me-2"></i>
     <span th:text="${mensajeExito}"></span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
 
   <!-- MENSAJE DE ERROR DE AUTENTICACIÓN -->
-  <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" style="width: 350px; margin-bottom: 1rem;">
+  <div th:if="${error}" class="alert alert-danger fade show" role="alert" style="width: 350px; margin-bottom: 1rem;">
     <i class="bi bi-exclamation-triangle-fill me-2"></i>
     <span th:text="${error}"></span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
 
   <!-- MENSAJE DE LOGOUT -->
-  <div th:if="${mensaje}" class="alert alert-info alert-dismissible fade show" role="alert" style="width: 350px; margin-bottom: 1rem;">
+  <div th:if="${mensaje}" class="alert alert-info fade show" role="alert" style="width: 350px; margin-bottom: 1rem;">
     <i class="bi bi-info-circle-fill me-2"></i>
     <span th:text="${mensaje}"></span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
 
   <form id="form" novalidate th:action="@{/login}" method="post" class="border border-dark rounded form-class p-4" style="width: 350px;">
@@ -51,9 +48,10 @@
       <label for="inputEmail">Correo</label>
       <p id="emailError" class="emailError"></p>
     </div>
-    <div class="form-floating mb-3">
+    <div class="form-floating mb-3 position-relative">
       <input type="password" name="password" class="form-control" id="inputPassword" placeholder="Password" required>
       <label for="inputPassword">Contraseña</label>
+      <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer; z-index: 10; margin-top: -0.5rem;"></i>
       <p id="passError" class="passError"></p>
     </div>
 

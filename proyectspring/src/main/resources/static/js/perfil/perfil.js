@@ -229,4 +229,53 @@ document.addEventListener("DOMContentLoaded", () => {
             validarFormularioEliminar();
         });
     }
+
+    // ============================================
+    // TOGGLE MOSTRAR/OCULTAR CONTRASEÑAS
+    // ============================================
+    
+    // Contraseñas del formulario de cambio de contraseña
+    const togglePasswordActual = document.getElementById('togglePasswordActual');
+    const toggleNuevaPassword = document.getElementById('toggleNuevaPassword');
+    const toggleConfirmarPassword = document.getElementById('toggleConfirmarPassword');
+    
+    if (togglePasswordActual && camposPassword[0]) {
+        togglePasswordActual.addEventListener('click', function() {
+            const type = camposPassword[0].getAttribute('type') === 'password' ? 'text' : 'password';
+            camposPassword[0].setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    }
+
+    if (toggleNuevaPassword && camposPassword[1]) {
+        toggleNuevaPassword.addEventListener('click', function() {
+            const type = camposPassword[1].getAttribute('type') === 'password' ? 'text' : 'password';
+            camposPassword[1].setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    }
+
+    if (toggleConfirmarPassword && camposPassword[2]) {
+        toggleConfirmarPassword.addEventListener('click', function() {
+            const type = camposPassword[2].getAttribute('type') === 'password' ? 'text' : 'password';
+            camposPassword[2].setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    }
+
+    // Contraseña del modal de eliminar cuenta
+    const togglePasswordModal = document.getElementById('togglePasswordModal');
+    const passwordModalInput = document.getElementById('password');
+
+    if (togglePasswordModal && passwordModalInput) {
+        togglePasswordModal.addEventListener('click', function() {
+            const type = passwordModalInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordModalInput.setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    }
 });

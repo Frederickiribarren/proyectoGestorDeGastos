@@ -29,16 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
             warning.textContent = '';
             warning.classList.remove('text-danger', 'text-success');
         }
-        [nameInput, emailInput, passwordInput, confirmInput].forEach(input => {
-            if (input) input.classList.remove('is-invalid', 'is-valid');
-        });
+        // No aplicar clases de validación de Bootstrap
     }
 
     function showFieldError(field, errorElement, message) {
-        if (field) {
-            field.classList.remove('is-valid');
-            field.classList.add('is-invalid');
-        }
         if (errorElement) {
             errorElement.textContent = message;
             errorElement.classList.add('text-danger');
@@ -46,10 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showFieldValid(field, errorElement) {
-        if (field) {
-            field.classList.remove('is-invalid');
-            field.classList.add('is-valid');
-        }
         if (errorElement) {
             errorElement.textContent = '';
             errorElement.classList.remove('text-danger');
@@ -57,17 +47,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Limpiar errores al escribir
-    [nameInput, emailInput, passwordInput, confirmInput].forEach(input => {
-        if (input) {
-            input.addEventListener('input', () => {
-                input.classList.remove('is-invalid');
-                const errorId = input.id.replace('input', '') + 'Error';
-                const errorEl = document.getElementById(errorId.charAt(0).toLowerCase() + errorId.slice(1));
-                if (errorEl) errorEl.textContent = '';
-            });
-            input.addEventListener('invalid', (e) => e.preventDefault());
-        }
-    });
+    if (nameInput) {
+        nameInput.addEventListener('input', () => {
+            if (nameError) nameError.textContent = '';
+            const serverError = document.getElementById('nombreErrorServer');
+            if (serverError) serverError.style.display = 'none';
+            if (warning) {
+                warning.textContent = '';
+                warning.classList.remove('text-danger', 'text-success');
+            }
+        });
+        nameInput.addEventListener('invalid', (e) => e.preventDefault());
+    }
+
+    if (emailInput) {
+        emailInput.addEventListener('input', () => {
+            if (emailError) emailError.textContent = '';
+            const serverError = document.getElementById('emailErrorServer');
+            if (serverError) serverError.style.display = 'none';
+            if (warning) {
+                warning.textContent = '';
+                warning.classList.remove('text-danger', 'text-success');
+            }
+        });
+        emailInput.addEventListener('invalid', (e) => e.preventDefault());
+    }
+
+    if (passwordInput) {
+        passwordInput.addEventListener('input', () => {
+            if (passwordError) passwordError.textContent = '';
+            const serverError = document.getElementById('passErrorServer');
+            if (serverError) serverError.style.display = 'none';
+            if (warning) {
+                warning.textContent = '';
+                warning.classList.remove('text-danger', 'text-success');
+            }
+        });
+        passwordInput.addEventListener('invalid', (e) => e.preventDefault());
+    }
+
+    if (confirmInput) {
+        confirmInput.addEventListener('input', () => {
+            if (confirmError) confirmError.textContent = '';
+            const serverError = document.getElementById('confirmPassErrorServer');
+            if (serverError) serverError.style.display = 'none';
+            if (warning) {
+                warning.textContent = '';
+                warning.classList.remove('text-danger', 'text-success');
+            }
+        });
+        confirmInput.addEventListener('invalid', (e) => e.preventDefault());
+    }
 
     // VALIDACIÓN AL ENVIAR
     formEl.addEventListener('submit', (e) => {
@@ -179,4 +209,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // Toggle para mostrar/ocultar contraseñas
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    }
+
+    if (toggleConfirmPassword && confirmInput) {
+        toggleConfirmPassword.addEventListener('click', function() {
+            const type = confirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmInput.setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    }
 });

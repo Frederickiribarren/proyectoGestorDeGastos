@@ -22,10 +22,9 @@
 <main class="form-signin d-flex flex-column align-items-center flex-grow-1 image-central">
   
   <!-- MENSAJE DE ERROR DEL SERVIDOR -->
-  <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" style="width: 380px; margin-bottom: 1rem;">
+  <div th:if="${error}" class="alert alert-danger fade show" role="alert" style="width: 380px; margin-bottom: 1rem;">
     <i class="bi bi-exclamation-triangle-fill me-2"></i>
     <span th:text="${error}"></span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
 
   <form id="form" 
@@ -49,7 +48,7 @@
              placeholder="Nombre completo">
       <label for="inputNombre">Nombre completo</label>
       <p class="text-danger small mt-1 mb-0" id="nombreError"></p>
-      <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></p>
+      <p class="text-danger small mt-1 mb-0" id="nombreErrorServer" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></p>
     </div>
 
     <!-- EMAIL -->
@@ -62,11 +61,11 @@
              placeholder="name@example.com">
       <label for="inputEmail">Correo electrónico</label>
       <p class="text-danger small mt-1 mb-0" id="emailError"></p>
-      <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+      <p class="text-danger small mt-1 mb-0" id="emailErrorServer" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
     </div>
 
     <!-- CONTRASEÑA -->
-    <div class="form-floating mb-3">
+    <div class="form-floating mb-3 position-relative">
       <input type="password" 
              class="form-control" 
              id="inputPassword" 
@@ -74,12 +73,13 @@
              th:field="*{password}"
              placeholder="Password">
       <label for="inputPassword">Contraseña</label>
+      <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer; z-index: 10;"></i>
       <p class="text-danger small mt-1 mb-0" id="passError"></p>
-      <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+      <p class="text-danger small mt-1 mb-0" id="passErrorServer" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
     </div>
 
     <!-- CONFIRMAR CONTRASEÑA -->
-    <div class="form-floating mb-3">
+    <div class="form-floating mb-3 position-relative">
       <input type="password" 
              class="form-control" 
              id="inputConfirmPassword" 
@@ -87,12 +87,13 @@
              th:field="*{confirmPassword}"
              placeholder="Confirmar contraseña">
       <label for="inputConfirmPassword">Confirmar contraseña</label>
+      <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="toggleConfirmPassword" style="cursor: pointer; z-index: 10;"></i>
       <p class="text-danger small mt-1 mb-0" id="confirmPassError"></p>
-      <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
+      <p class="text-danger small mt-1 mb-0" id="confirmPassErrorServer" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
     </div>
 
     <!-- TÉRMINOS -->
-    <div class="checkbox mb-3">
+    <div class="checkbox mb-3 mt-4">
       <label>
         <input type="checkbox" 
                id="inputTerminos" 
