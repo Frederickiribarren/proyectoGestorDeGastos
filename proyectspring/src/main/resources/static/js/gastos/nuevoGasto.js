@@ -641,7 +641,10 @@ document.addEventListener('DOMContentLoaded', function() {
         btnLimpiarFiltros.addEventListener('click', function() {
             buscarInput.value = '';
             filtroCategoria.value = '';
-            filtroMes.value = '';
+            // Resetear al mes actual en lugar de limpiar
+            const fechaActual = new Date();
+            const mesActual = `${fechaActual.getFullYear()}-${String(fechaActual.getMonth() + 1).padStart(2, '0')}`;
+            filtroMes.value = mesActual;
             aplicarFiltros();
         });
     }

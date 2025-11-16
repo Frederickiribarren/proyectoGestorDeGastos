@@ -218,7 +218,11 @@ function aplicarFiltros() {
 
 function limpiarFiltros() {
     document.getElementById('filtroTipo').value = '';
-    document.getElementById('filtroMes').value = '';
+    // Resetear al mes actual en lugar de limpiar
+    const fechaActual = new Date();
+    const mesActual = fechaActual.getMonth();
+    const anioActual = fechaActual.getFullYear();
+    document.getElementById('filtroMes').value = `${anioActual}-${String(mesActual + 1).padStart(2, '0')}`;
     aplicarFiltros();
 }
 
