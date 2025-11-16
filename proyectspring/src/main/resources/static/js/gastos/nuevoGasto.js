@@ -5,6 +5,120 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('modalNuevoGasto');
     const fechaInput = document.getElementById('fecha');
     
+    // Modal de eliminación
+    const modalEliminar = document.getElementById('modalEliminarGasto');
+    const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
+    let gastoIdAEliminar = null;
+    
+    // Event listener para cuando se abre el modal de eliminación
+    if (modalEliminar) {
+        modalEliminar.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            gastoIdAEliminar = button.getAttribute('data-gasto-id');
+            const descripcion = button.getAttribute('data-gasto-descripcion');
+            const monto = button.getAttribute('data-gasto-monto');
+            
+            document.getElementById('gastoDescripcion').textContent = descripcion;
+            document.getElementById('gastoMonto').textContent = '$' + parseFloat(monto).toLocaleString('es-CL') + ' CLP';
+        });
+    }
+    
+    // Event listener para confirmar eliminación
+    if (btnConfirmarEliminar) {
+        btnConfirmarEliminar.addEventListener('click', async function() {
+            if (!gastoIdAEliminar) return;
+            
+            // Deshabilitar botón mientras se elimina
+            btnConfirmarEliminar.disabled = true;
+            btnConfirmarEliminar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Eliminando...';
+            
+            try {
+                // Obtener token CSRF
+                const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+                
+                const headers = {};
+                if (csrfToken && csrfHeader) {
+                    headers[csrfHeader] = csrfToken;
+                }
+                
+                const response = await fetch(`/gastos/eliminar/${gastoIdAEliminar}`, {
+                    method: 'DELETE',
+                    headers: headers
+                });
+                
+                if (response.ok) {
+                    // Cerrar modal
+                    const modalInstance = bootstrap.Modal.getInstance(modalEliminar);
+                    modalInstance.hide();
+                    
+                    // Recargar la página para mostrar los datos actualizados
+                    window.location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error al eliminar: ' + error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión al eliminar el gasto');
+            } finally {
+                // Rehabilitar botón
+                btnConfirmarEliminar.disabled = false;
+                btnConfirmarEliminar.innerHTML = '<i class="bi bi-trash me-1"></i>Eliminar Gasto';
+            }
+        });
+    }
+    
+    // Dropdown personalizado para método de pago
+    const dropdownItems = document.querySelectorAll('#modalNuevoGasto .dropdown-menu .dropdown-item');
+    const selectedMetodo = document.getElementById('selectedMetodo');
+    const metodoPagoInput = document.getElementById('metodoPago');
+    
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const value = this.getAttribute('data-value');
+            
+            // Obtener el header (grupo) más cercano hacia arriba
+            let categoria = '';
+            let prevElement = this.closest('li').previousElementSibling;
+            
+            // Buscar hacia atrás hasta encontrar un header
+            while (prevElement) {
+                if (prevElement.querySelector('.dropdown-header')) {
+                    categoria = prevElement.querySelector('.dropdown-header').textContent.trim();
+                    break;
+                }
+                prevElement = prevElement.previousElementSibling;
+            }
+            
+            // Construir el texto a mostrar
+            let displayText;
+            if (categoria && value !== 'efectivo' && value !== 'otro') {
+                // Remover el emoji del inicio del texto de categoría
+                categoria = categoria.replace(/^[\u{1F300}-\u{1F9FF}]\s*/u, '');
+                displayText = categoria + ' / ' + this.textContent.trim();
+            } else {
+                displayText = this.textContent.trim();
+            }
+            
+            selectedMetodo.textContent = displayText;
+            selectedMetodo.classList.remove('text-muted');
+            selectedMetodo.classList.add('text-dark');
+            metodoPagoInput.value = value;
+            metodoPagoInput.classList.remove('is-invalid');
+            
+            // Mostrar/ocultar selector de cuotas según el método de pago
+            const divCuotas = document.getElementById('divCuotas');
+            if (value && value.startsWith('credito-')) {
+                divCuotas.style.display = 'block';
+            } else {
+                divCuotas.style.display = 'none';
+                document.getElementById('numeroCuotas').value = '1';
+            }
+        });
+    });
+    
     // Array para almacenar los gastos (simulando base de datos)
     let gastos = [];
     let contadorId = 1;
@@ -165,40 +279,63 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Evento del botón guardar
     if (btnGuardar) {
-        btnGuardar.addEventListener('click', function(e) {
+        btnGuardar.addEventListener('click', async function(e) {
             e.preventDefault();
             
             if (validarFormulario()) {
-                // Crear objeto gasto
-                const formData = new FormData(form);
-                const nuevoGasto = {
-                    id: contadorId++,
-                    descripcion: formData.get('descripcion'),
-                    monto: parseFloat(formData.get('monto')),
-                    fecha: formData.get('fecha'),
-                    categoria: formData.get('categoria'),
-                    metodoPago: formData.get('metodoPago'),
-                    notas: formData.get('notas') || ''
-                };
+                // Deshabilitar botón mientras se guarda
+                btnGuardar.disabled = true;
+                btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Guardando...';
                 
-                // Agregar a la lista
-                gastos.push(nuevoGasto);
-                
-                // Actualizar tabla
-                actualizarTabla();
-                
-                // Cerrar modal y limpiar formulario
-                const modalInstance = bootstrap.Modal.getInstance(modal);
-                modalInstance.hide();
-                form.reset();
-                limpiarErrores();
-                
-                // Establecer fecha actual nuevamente
-                const hoy = new Date().toISOString().split('T')[0];
-                fechaInput.value = hoy;
-                
-                // Mostrar notificación
-                mostrarNotificacion('success', '✅ Gasto registrado exitosamente');
+                try {
+                    // Crear objeto gasto
+                    const formData = new FormData(form);
+                    const nuevoGasto = {
+                        descripcion: formData.get('descripcion'),
+                        monto: parseFloat(formData.get('monto')),
+                        fecha: formData.get('fecha'),
+                        categoria: formData.get('categoria'),
+                        metodoPago: formData.get('metodoPago'),
+                        notaAdicional: formData.get('notas') || '',
+                        numeroCuotas: parseInt(formData.get('numeroCuotas')) || 1
+                    };
+                    
+                    // Obtener token CSRF
+                    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+                    
+                    // Enviar al servidor
+                    const headers = {
+                        'Content-Type': 'application/json',
+                    };
+                    
+                    if (csrfToken && csrfHeader) {
+                        headers[csrfHeader] = csrfToken;
+                    }
+                    
+                    const response = await fetch('/gastos/guardar', {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(nuevoGasto)
+                    });
+                    
+                    if (response.ok) {
+                        const mensaje = await response.text();
+                        
+                        // Recargar la página para mostrar los datos actualizados
+                        window.location.reload();
+                    } else {
+                        const error = await response.text();
+                        mostrarNotificacion('error', '❌ Error al guardar: ' + error);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    mostrarNotificacion('error', '❌ Error de conexión al guardar el gasto');
+                } finally {
+                    // Rehabilitar botón
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerHTML = '<i class="bi bi-save me-1"></i>Guardar Gasto';
+                }
             } else {
                 // Hacer scroll al primer error
                 const primerError = form.querySelector('.is-invalid');
@@ -341,10 +478,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.body.appendChild(alertDiv);
         
-        // Remover después de 3 segundos
+        // Remover después de 2 segundos
         setTimeout(() => {
             alertDiv.remove();
-        }, 3000);
+        }, 2000);
     }
     
     // Funciones globales para acciones de tabla
@@ -364,21 +501,132 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    window.eliminarGasto = function(id) {
-        if (confirm('¿Está seguro de eliminar este gasto?')) {
-            const index = gastos.findIndex(g => g.id === id);
-            if (index !== -1) {
-                gastos.splice(index, 1);
-                actualizarTabla();
-                mostrarNotificacion('warning', '🗑️ Gasto eliminado');
-            }
-        }
-    };
-    
     // Filtros y búsqueda
     const buscarInput = document.getElementById('buscarGasto');
     const filtroCategoria = document.getElementById('filtroCategoria');
     const filtroMes = document.getElementById('filtroMes');
+    const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
+    
+    // Función para poblar el filtro de meses con los meses que tienen gastos
+    function poblarFiltroMeses() {
+        const filas = document.querySelectorAll('#tbodyGastos tr:not(#emptyState)');
+        const mesesSet = new Set();
+        
+        filas.forEach(fila => {
+            const fechaData = fila.dataset.fecha; // formato yyyy-MM-dd
+            if (fechaData) {
+                const [año, mes] = fechaData.split('-');
+                const mesKey = `${año}-${mes}`;
+                mesesSet.add(mesKey);
+            }
+        });
+        
+        // Convertir a array y ordenar descendente (más reciente primero)
+        const mesesArray = Array.from(mesesSet).sort((a, b) => b.localeCompare(a));
+        
+        // Limpiar opciones existentes (excepto "Seleccionar mes")
+        const opcionSeleccionar = filtroMes.querySelector('option[value=""]');
+        filtroMes.innerHTML = '';
+        filtroMes.appendChild(opcionSeleccionar);
+        
+        // Agregar opciones de meses que tienen gastos
+        mesesArray.forEach(mesKey => {
+            const [año, mes] = mesKey.split('-');
+            const fecha = new Date(parseInt(año), parseInt(mes) - 1, 1);
+            const nombreMes = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+            // Capitalizar primera letra
+            const nombreMesCapitalizado = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
+            
+            const option = document.createElement('option');
+            option.value = mesKey;
+            option.textContent = nombreMesCapitalizado;
+            filtroMes.appendChild(option);
+        });
+        
+        // Seleccionar y filtrar por el mes actual automáticamente
+        const fechaActual = new Date();
+        const mesActual = `${fechaActual.getFullYear()}-${String(fechaActual.getMonth() + 1).padStart(2, '0')}`;
+        if (mesesArray.includes(mesActual)) {
+            filtroMes.value = mesActual;
+            // Remover el atributo disabled para que se pueda cambiar
+            opcionSeleccionar.removeAttribute('disabled');
+            opcionSeleccionar.textContent = 'Todos los meses';
+            aplicarFiltros(); // Aplicar filtro del mes actual automáticamente
+        }
+    }
+    
+    // Función para calcular y actualizar las estadísticas
+    function actualizarEstadisticas() {
+        const filas = document.querySelectorAll('#tbodyGastos tr:not(#emptyState)');
+        
+        if (filas.length === 0) {
+            document.getElementById('totalMes').textContent = '$0 CLP';
+            document.getElementById('promedioDiario').textContent = '$0 CLP';
+            document.getElementById('categoriaPrincipal').textContent = '-';
+            return;
+        }
+        
+        // Calcular gastos del mes actual
+        const fechaActual = new Date();
+        const mesActual = fechaActual.getMonth();
+        const añoActual = fechaActual.getFullYear();
+        
+        let totalMes = 0;
+        const categoriasCont = {};
+        
+        filas.forEach(fila => {
+            const fechaData = fila.dataset.fecha; // formato yyyy-MM-dd
+            const categoriaData = fila.dataset.categoria;
+            const montoCell = fila.querySelector('td:nth-child(6)');
+            
+            if (fechaData && montoCell) {
+                const [año, mes, dia] = fechaData.split('-');
+                const fechaGasto = new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
+                
+                // Obtener monto del texto
+                const montoTexto = montoCell.textContent.replace(/[^0-9]/g, '');
+                const monto = parseInt(montoTexto) || 0;
+                
+                // Sumar si es del mes actual
+                if (fechaGasto.getMonth() === mesActual && fechaGasto.getFullYear() === añoActual) {
+                    totalMes += monto;
+                }
+                
+                // Contar categorías
+                if (categoriaData) {
+                    categoriasCont[categoriaData] = (categoriasCont[categoriaData] || 0) + 1;
+                }
+            }
+        });
+        
+        // Actualizar total del mes
+        document.getElementById('totalMes').textContent = '$' + totalMes.toLocaleString('es-CL') + ' CLP';
+        
+        // Calcular promedio diario
+        const diasDelMes = new Date(añoActual, mesActual + 1, 0).getDate();
+        const promedio = Math.round(totalMes / diasDelMes);
+        document.getElementById('promedioDiario').textContent = '$' + promedio.toLocaleString('es-CL') + ' CLP';
+        
+        // Encontrar categoría principal
+        let catPrincipal = '-';
+        let maxCont = 0;
+        
+        for (const [cat, cont] of Object.entries(categoriasCont)) {
+            if (cont > maxCont) {
+                maxCont = cont;
+                const categoriaInfo = categorias[cat];
+                catPrincipal = categoriaInfo ? `${categoriaInfo.icono} ${categoriaInfo.nombre}` : cat;
+            }
+        }
+        
+        document.getElementById('categoriaPrincipal').textContent = catPrincipal;
+    }
+    
+    // Poblar filtro de meses y actualizar estadísticas al cargar la página
+    if (filtroMes) {
+        poblarFiltroMeses();
+        actualizarEstadisticas();
+    }
     
     if (buscarInput) {
         buscarInput.addEventListener('input', aplicarFiltros);
@@ -389,6 +637,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (filtroMes) {
         filtroMes.addEventListener('change', aplicarFiltros);
     }
+    if (btnLimpiarFiltros) {
+        btnLimpiarFiltros.addEventListener('click', function() {
+            buscarInput.value = '';
+            filtroCategoria.value = '';
+            filtroMes.value = '';
+            aplicarFiltros();
+        });
+    }
     
     function aplicarFiltros() {
         const textoBusqueda = buscarInput?.value.toLowerCase() || '';
@@ -396,32 +652,94 @@ document.addEventListener('DOMContentLoaded', function() {
         const mesFiltro = filtroMes?.value || '';
         
         const filas = document.querySelectorAll('#tbodyGastos tr:not(#emptyState)');
+        let filasVisibles = 0;
+        let totalVisible = 0;
         
         filas.forEach(fila => {
-            const gastoId = parseInt(fila.dataset.gastoId);
-            const gasto = gastos.find(g => g.id === gastoId);
-            
-            if (!gasto) return;
-            
             let mostrar = true;
             
-            // Filtro de búsqueda
-            if (textoBusqueda && !gasto.descripcion.toLowerCase().includes(textoBusqueda)) {
+            // Usar data attributes si están disponibles, sino usar el contenido del DOM
+            const descripcion = (fila.dataset.descripcion || fila.querySelector('td:nth-child(3)')?.textContent || '').toLowerCase();
+            const categoria = (fila.dataset.categoria || fila.querySelector('td:nth-child(4) .badge-categoria')?.textContent.trim() || '').toLowerCase();
+            const fechaData = fila.dataset.fecha; // formato yyyy-MM-dd
+            const fechaTexto = fila.querySelector('td:nth-child(2)')?.textContent.trim(); // formato dd/MM/yyyy
+            const montoCell = fila.querySelector('td:nth-child(6)');
+            
+            // Filtro de búsqueda por descripción
+            if (textoBusqueda && !descripcion.includes(textoBusqueda)) {
                 mostrar = false;
             }
             
             // Filtro de categoría
-            if (categoriaFiltro && gasto.categoria !== categoriaFiltro) {
+            if (categoriaFiltro && categoria !== categoriaFiltro.toLowerCase()) {
                 mostrar = false;
             }
             
             // Filtro de mes
-            if (mesFiltro && !gasto.fecha.startsWith(mesFiltro)) {
-                mostrar = false;
+            if (mesFiltro) {
+                let cumpleMes = false;
+                
+                // Primero intentar con data-fecha (formato yyyy-MM-dd)
+                if (fechaData) {
+                    const [año, mes] = fechaData.split('-');
+                    const fechaISO = `${año}-${mes}`;
+                    cumpleMes = (fechaISO === mesFiltro);
+                } 
+                // Sino usar el texto visible (formato dd/MM/yyyy)
+                else if (fechaTexto) {
+                    const [dia, mes, año] = fechaTexto.split('/');
+                    const fechaISO = `${año}-${mes.padStart(2, '0')}`;
+                    cumpleMes = (fechaISO === mesFiltro);
+                }
+                
+                if (!cumpleMes) {
+                    mostrar = false;
+                }
             }
             
             fila.style.display = mostrar ? '' : 'none';
+            
+            // Contar filas visibles y sumar total
+            if (mostrar) {
+                filasVisibles++;
+                if (montoCell) {
+                    const montoTexto = montoCell.textContent.replace(/[^0-9]/g, '');
+                    totalVisible += parseInt(montoTexto) || 0;
+                }
+            }
         });
+        
+        // Actualizar total en el footer
+        const montoTotalElement = document.getElementById('montoTotal');
+        if (montoTotalElement) {
+            if (filasVisibles === 0) {
+                montoTotalElement.innerHTML = '<span>$0 CLP</span>';
+            } else {
+                montoTotalElement.innerHTML = `<span>$${totalVisible.toLocaleString('es-CL')} CLP</span>`;
+            }
+        }
+        
+        // Mostrar/ocultar mensaje de sin resultados
+        const emptyState = document.getElementById('emptyState');
+        if (filasVisibles === 0 && filas.length > 0) {
+            if (!document.getElementById('noResultsRow')) {
+                const noResultsRow = document.createElement('tr');
+                noResultsRow.id = 'noResultsRow';
+                noResultsRow.innerHTML = `
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-search fs-1 d-block mb-3"></i>
+                        <p class="mb-0">No se encontraron gastos con los filtros aplicados</p>
+                        <small>Intente modificar los criterios de búsqueda</small>
+                    </td>
+                `;
+                document.getElementById('tbodyGastos').appendChild(noResultsRow);
+            }
+        } else {
+            const noResultsRow = document.getElementById('noResultsRow');
+            if (noResultsRow) {
+                noResultsRow.remove();
+            }
+        }
     }
     
     // Limpiar formulario al cerrar el modal

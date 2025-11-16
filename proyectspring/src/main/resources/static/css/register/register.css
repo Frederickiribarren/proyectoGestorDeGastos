@@ -1,0 +1,14 @@
+/* Ocultar íconos de validación de Bootstrap */
+.form-control {
+    background-image: none !important;
+}
+
+.form-control.is-valid,
+.form-control.is-invalid {
+    background-image: none !important;
+}
+
+/* Asegurar espacio para el ícono del ojo en campos de contraseña */
+.form-control.pe-5 {
+    padding-right: 2.5rem !important;
+}

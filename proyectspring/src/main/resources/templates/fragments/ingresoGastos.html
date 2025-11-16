@@ -90,27 +90,77 @@
                 <i class="bi bi-credit-card text-danger me-1"></i>
                 Método de Pago
               </label>
-              <select class="form-select" id="metodoPago" name="metodoPago" required>
-                <option value="" selected disabled>Seleccione método de pago</option>
-                <option value="efectivo">💵 Efectivo</option>
-                <option value="debito">💳 Tarjeta de Débito</option>
-                <option value="credito">💳 Tarjeta de Crédito</option>
-                <option value="transferencia">🏦 Transferencia</option>
-                <option value="otro">📱 Otro</option>
-              </select>
+              <div class="dropdown">
+                <button class="form-select text-start" type="button" id="dropdownMetodoPago" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span id="selectedMetodo" class="text-muted">Seleccione método de pago</span>
+                </button>
+                <ul class="dropdown-menu w-100" aria-labelledby="dropdownMetodoPago" style="max-height: 300px; overflow-y: auto;">
+                  <li><a class="dropdown-item" href="#" data-value="efectivo">💵 Efectivo</a></li>
+                  <li><h6 class="dropdown-header">💳 Tarjeta de Débito</h6></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-banco-chile">Banco de Chile</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-santander">Santander</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-bci">BCI</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-estado">Banco Estado</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-itau">Itaú</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-scotiabank">Scotiabank</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-security">Banco Security</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-falabella">Banco Falabella</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-ripley">Banco Ripley</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-tenpo">Tenpo</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-mach">MACH</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="debito-mercadopago">Mercado Pago</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><h6 class="dropdown-header">💳 Tarjeta de Crédito</h6></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-banco-chile">Banco de Chile</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-santander">Santander</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-bci">BCI</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-estado">Banco Estado</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-itau">Itaú</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-scotiabank">Scotiabank</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-security">Banco Security</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-falabella">CMR Falabella</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-ripley">Ripley</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-paris">Cencosud (Paris)</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-lider">Líder</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="credito-presto">Presto</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><h6 class="dropdown-header">🏦 Transferencia Bancaria</h6></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-banco-chile">Banco de Chile</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-santander">Santander</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-bci">BCI</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-estado">Banco Estado</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-itau">Itaú</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-scotiabank">Scotiabank</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-security">Banco Security</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-falabella">Banco Falabella</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="transferencia-ripley">Banco Ripley</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#" data-value="otro">📱 Otro</a></li>
+                </ul>
+              </div>
+              <input type="hidden" id="metodoPago" name="metodoPago" required>
               <div class="invalid-feedback">
                 Por favor, seleccione un método de pago.
               </div>
             </div>
 
-            <!-- NOTAS ADICIONALES -->
-            <div class="col-12">
-              <label for="notas" class="form-label fw-semibold">
-                <i class="bi bi-sticky text-secondary me-1"></i>
-                Notas Adicionales (Opcional)
+            <!-- NÚMERO DE CUOTAS (Solo para tarjeta de crédito) -->
+            <div class="col-md-6" id="divCuotas" style="display: none;">
+              <label for="numeroCuotas" class="form-label fw-semibold">
+                <i class="bi bi-123 text-primary me-1"></i>
+                Número de Cuotas
               </label>
-              <textarea class="form-control" id="notas" name="notas" rows="3" 
-                        placeholder="Información adicional sobre el gasto..."></textarea>
+              <select class="form-select" id="numeroCuotas" name="numeroCuotas">
+                <option value="1" selected>Sin cuotas (1 pago)</option>
+                <option value="3">3 cuotas</option>
+                <option value="6">6 cuotas</option>
+                <option value="9">9 cuotas</option>
+                <option value="12">12 cuotas</option>
+                <option value="18">18 cuotas</option>
+                <option value="24">24 cuotas</option>
+                <option value="36">36 cuotas</option>
+              </select>
+              <small class="text-muted">El monto se dividirá en cuotas mensuales</small>
             </div>
 
           </div>

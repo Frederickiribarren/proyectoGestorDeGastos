@@ -1,154 +1,37 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head th:replace="~{fragments/head :: head}">
     <title>Dashboard - PocketBook</title>
-
-  <!--CSS-->
-  <link rel="stylesheet" th:href="@{/css/dashboard/dashboard.css}" href="/css/dashboard/dashboard.css">
-  <!--BOOTSTRAP CSS-->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <!--BOOTSTRAP ICONS-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
-  <!-- NAVBAR SUPERIOR -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/dashboard}" href="/dashboard">
-        <img th:src="@{/image/factura.png}" src="/image/factura.png" alt="PocketBook" width="30" height="24">
-        <span class="fw-bold">PocketBook</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-              <i class="bi bi-person-circle fs-5"></i>
-              <span>Usuario</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end user-dropdown shadow-lg border-0 mt-2 py-2">
-              <li class="dropdown-header px-3 pb-2">
-                <div class="d-flex align-items-center gap-2">
-                  <i class="bi bi-person-circle text-primary fs-4"></i>
-                  <div>
-                    <div class="fw-bold text-dark">Usuario Demo</div>
-                    <small class="text-muted">usuario@email.com</small>
-                  </div>
-                </div>
-              </li>
-              <li><hr class="dropdown-divider my-2"></li>
-              <li>
-                <a class="dropdown-item user-menu-item d-flex align-items-center gap-3 px-3 py-2" th:href="@{/perfil}" href="/perfil">
-                  <div class="menu-icon-wrapper bg-primary-subtle rounded-circle p-2">
-                    <i class="bi bi-person text-primary"></i>
-                  </div>
-                  <div class="flex-grow-1">
-                    <div class="fw-semibold">Mi Perfil</div>
-                    <small class="text-muted">Ver y editar información</small>
-                  </div>
-                  <i class="bi bi-chevron-right text-muted small"></i>
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item user-menu-item d-flex align-items-center gap-3 px-3 py-2" th:href="@{/configuracion}" href="/configuracion">
-                  <div class="menu-icon-wrapper bg-info-subtle rounded-circle p-2">
-                    <i class="bi bi-sliders text-info"></i>
-                  </div>
-                  <div class="flex-grow-1">
-                    <div class="fw-semibold">Configuración</div>
-                    <small class="text-muted">Preferencias y ajustes</small>
-                  </div>
-                  <i class="bi bi-chevron-right text-muted small"></i>
-                </a>
-              </li>
-              <li><hr class="dropdown-divider my-2"></li>
-              <li>
-                <a class="dropdown-item user-menu-item logout-item d-flex align-items-center gap-3 px-3 py-2" th:href="@{/login}" href="/login">
-                  <div class="menu-icon-wrapper bg-danger-subtle rounded-circle p-2">
-                    <i class="bi bi-box-arrow-right text-danger"></i>
-                  </div>
-                  <div class="flex-grow-1">
-                    <div class="fw-semibold text-danger">Cerrar Sesión</div>
-                    <small class="text-muted">Salir de tu cuenta</small>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <!--CSS-->
+  <link rel="stylesheet" th:href="@{/css/dashboard/dashboard.css}" href="/css/dashboard/dashboard.css">
+  
+  <!-- NAVBAR -->
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
   <!-- CONTENEDOR PRINCIPAL CON SIDEBAR Y CONTENIDO -->
   <div class="container-fluid">
     <div class="row">
       <!-- SIDEBAR -->
-      <aside class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
-        <div class="position-sticky pt-4 px-3">
-          <div class="user-section mb-4 text-center">
-            <div class="user-avatar mb-2">
-              <i class="bi bi-person-circle text-primary" style="font-size: 3rem;"></i>
-            </div>
-            <h6 class="fw-bold mb-1">Nombre Usuario</h6>
-            <p class="text-muted small mb-0">usuario@email.com</p>
-          </div>
-          
-          <hr>
-          
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link active d-flex align-items-center gap-2" th:href="@{/dashboard}" href="/dashboard">
-                <i class="bi bi-house-door"></i>
-                <span>Dashboard</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" th:href="@{/gastos}" href="/gastos">
-                <i class="bi bi-receipt"></i>
-                <span>Mis Gastos</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <i class="bi bi-wallet2"></i>
-                <span>Presupuestos</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <i class="bi bi-graph-up-arrow"></i>
-                <span>Reportes</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <i class="bi bi-tag"></i>
-                <span>Categorías</span>
-              </a>
-            </li>
-            <!--SECCION PARA GESTIONAR DB DE USUARIOS -->
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" th:href="@{/gestor-usuarios}" href="/gestor-usuarios">
-                <i class="bi bi-database"></i>
-                <span>Base de Datos</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
+      <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
 
       <!-- CONTENIDO PRINCIPAL -->
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-3 mb-4 border-bottom">
-          <h1 class="h2 fw-bold">
-            <i class="bi bi-grid text-primary me-2"></i>
-            Dashboard
-          </h1>
+          <div>
+            <h1 class="h2 fw-bold mb-1">
+              <i class="bi bi-grid text-primary me-2"></i>
+              Dashboard
+            </h1>
+            <p class="text-muted mb-0" th:if="${usuario != null}">
+              Bienvenido de nuevo, <span class="fw-semibold" th:text="${usuario.nombre}">Usuario</span>
+            </p>
+          </div>
+          <div class="text-muted small" th:if="${usuario != null}">
+            <i class="bi bi-calendar3 me-1"></i>
+            Miembro desde <span th:text="${#temporals.format(usuario.fechaRegistro, 'dd/MM/yyyy')}">01/01/2024</span>
+          </div>
         </div>
 
         <!-- CARDS DE RESUMEN -->
@@ -159,10 +42,10 @@
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
                     <h6 class="text-muted mb-2">Gastos del Mes</h6>
-                    <h3 class="fw-bold mb-0">$0.00</h3>
+                    <h3 class="fw-bold mb-0" th:text="${'$' + #numbers.formatDecimal(totalGastosMes, 0, 'POINT', 2, 'COMMA')}">$0.00</h3>
                   </div>
-                  <div class="icon-box bg-primary bg-opacity-10 rounded-circle p-3">
-                    <i class="bi bi-cash-stack text-primary fs-4"></i>
+                  <div class="icon-box bg-danger bg-opacity-10 rounded-circle p-3">
+                    <i class="bi bi-cash-stack text-danger fs-4"></i>
                   </div>
                 </div>
               </div>
@@ -174,11 +57,11 @@
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
-                    <h6 class="text-muted mb-2">Presupuesto</h6>
-                    <h3 class="fw-bold mb-0">$0.00</h3>
+                    <h6 class="text-muted mb-2">Ingresos del Mes</h6>
+                    <h3 class="fw-bold mb-0 text-success" th:text="${'$' + #numbers.formatDecimal(totalIngresosMes, 0, 'POINT', 2, 'COMMA')}">$0.00</h3>
                   </div>
                   <div class="icon-box bg-success bg-opacity-10 rounded-circle p-3">
-                    <i class="bi bi-piggy-bank text-success fs-4"></i>
+                    <i class="bi bi-wallet2 text-success fs-4"></i>
                   </div>
                 </div>
               </div>
@@ -190,11 +73,13 @@
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
-                    <h6 class="text-muted mb-2">Ahorrado</h6>
-                    <h3 class="fw-bold mb-0 text-success">$0.00</h3>
+                    <h6 class="text-muted mb-2">Ahorro (Ingresos - Gastos)</h6>
+                    <h3 class="fw-bold mb-0" 
+                        th:classappend="${ahorro >= 0} ? 'text-success' : 'text-danger'"
+                        th:text="${'$' + #numbers.formatDecimal(ahorro, 0, 'POINT', 2, 'COMMA')}">$0.00</h3>
                   </div>
                   <div class="icon-box bg-info bg-opacity-10 rounded-circle p-3">
-                    <i class="bi bi-arrow-up-circle text-info fs-4"></i>
+                    <i class="bi bi-piggy-bank text-info fs-4"></i>
                   </div>
                 </div>
               </div>
@@ -206,8 +91,8 @@
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
-                    <h6 class="text-muted mb-2">Transacciones</h6>
-                    <h3 class="fw-bold mb-0">0</h3>
+                    <h6 class="text-muted mb-2">Transacciones (Gastos)</h6>
+                    <h3 class="fw-bold mb-0" th:text="${totalTransacciones}">0</h3>
                   </div>
                   <div class="icon-box bg-warning bg-opacity-10 rounded-circle p-3">
                     <i class="bi bi-list-ul text-warning fs-4"></i>
@@ -225,13 +110,86 @@
               <div class="card-header bg-white border-0 py-3">
                 <h5 class="mb-0 fw-bold">
                   <i class="bi bi-clock-history text-primary me-2"></i>
-                  Actividad Reciente
+                  Actividad Reciente (Últimas 7 Transacciones)
                 </h5>
               </div>
               <div class="card-body">
-                <div class="text-center py-5 text-muted">
+                <div th:if="${!hayActividad}" class="text-center py-5 text-muted">
                   <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
                   <p>No hay transacciones recientes</p>
+                </div>
+                
+                <div th:if="${hayActividad}" class="list-group list-group-flush">
+                  <div th:each="actividad : ${actividadReciente}" 
+                       class="list-group-item border-0 px-0 py-3 d-flex justify-content-between align-items-center">
+                    
+                    <!-- SI ES GASTO -->
+                    <div th:if="${actividad.tipo == 'GASTO'}" class="d-flex align-items-center w-100">
+                      <div class="d-flex align-items-center flex-grow-1">
+                        <div class="icon-circle bg-danger bg-opacity-10 rounded-circle p-2 me-3">
+                          <i class="bi bi-arrow-down-circle text-danger"></i>
+                        </div>
+                        <div>
+                          <h6 class="mb-0 fw-semibold">
+                            <span class="badge bg-danger bg-opacity-10 text-danger me-2">GASTO</span>
+                            <span th:text="${actividad.descripcion}">Descripción</span>
+                          </h6>
+                          <small class="text-muted">
+                            <i class="bi bi-tag me-1"></i>
+                            <span th:text="${actividad.categoria}">Categoría</span>
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-calendar3 me-1"></i>
+                            <span th:text="${#temporals.format(actividad.fecha, 'dd/MM/yyyy')}">Fecha</span>
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-credit-card me-1"></i>
+                            <span th:text="${actividad.metodoPago}">Método</span>
+                          </small>
+                        </div>
+                      </div>
+                      <div class="text-end ms-3">
+                        <span class="fw-bold text-danger" 
+                              th:text="${'-$' + #numbers.formatDecimal(actividad.monto, 0, 'POINT', 2, 'COMMA')}">-$0.00</span>
+                        <br>
+                        <span th:if="${actividad.numeroCuotas != null and actividad.numeroCuotas > 1}" 
+                              class="badge bg-info bg-opacity-10 text-info">
+                          <i class="bi bi-cash-coin me-1"></i>
+                          Cuota <span th:text="${actividad.cuotaActual}">1</span>/<span th:text="${actividad.numeroCuotas}">1</span>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <!-- SI ES INGRESO -->
+                    <div th:if="${actividad.tipo == 'INGRESO'}" class="d-flex align-items-center w-100">
+                      <div class="d-flex align-items-center flex-grow-1">
+                        <div class="icon-circle bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                          <i class="bi bi-arrow-up-circle text-success"></i>
+                        </div>
+                        <div>
+                          <h6 class="mb-0 fw-semibold">
+                            <span class="badge bg-success bg-opacity-10 text-success me-2">INGRESO</span>
+                            <span th:text="${actividad.descripcion}">Descripción</span>
+                          </h6>
+                          <small class="text-muted">
+                            <i class="bi bi-tag me-1"></i>
+                            <span th:text="${actividad.tipoIngreso}">Tipo</span>
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-calendar3 me-1"></i>
+                            <span th:text="${#temporals.format(actividad.fecha, 'dd/MM/yyyy')}">Fecha</span>
+                            <span class="mx-2" th:if="${actividad.origen != null and !#strings.isEmpty(actividad.origen)}">•</span>
+                            <i class="bi bi-building me-1" th:if="${actividad.origen != null and !#strings.isEmpty(actividad.origen)}"></i>
+                            <span th:if="${actividad.origen != null and !#strings.isEmpty(actividad.origen)}" th:text="${actividad.origen}">Origen</span>
+                          </small>
+                        </div>
+                      </div>
+                      <div class="text-end ms-3">
+                        <span class="fw-bold text-success" 
+                              th:text="${'+$' + #numbers.formatDecimal(actividad.monto, 0, 'POINT', 2, 'COMMA')}">+$0.00</span>
+                        <br>
+                        <span class="badge bg-success bg-opacity-10 text-success" th:text="${actividad.categoria}">Categoría</span>
+                      </div>
+                    </div>
+                    
+                  </div>
                 </div>
               </div>
             </div>
@@ -242,13 +200,33 @@
               <div class="card-header bg-white border-0 py-3">
                 <h5 class="mb-0 fw-bold">
                   <i class="bi bi-pie-chart text-primary me-2"></i>
-                  Categorías
+                  Top 5 Categorías del Mes
                 </h5>
               </div>
               <div class="card-body">
-                <div class="text-center py-5 text-muted">
+                <div th:if="${!hayCategorias}" class="text-center py-5 text-muted">
                   <i class="bi bi-tags fs-1 mb-3 d-block"></i>
-                  <p>Sin categorías configuradas</p>
+                  <p>Sin gastos en categorías este mes</p>
+                </div>
+                
+                <div th:if="${hayCategorias}">
+                  <div th:each="categoria, iterStat : ${categoriasTop}" class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-semibold">
+                        <span class="badge bg-primary me-2" th:text="${iterStat.count}">1</span>
+                        <span th:text="${categoria.key}">Categoría</span>
+                      </span>
+                      <span class="text-danger fw-bold" 
+                            th:text="${'$' + #numbers.formatDecimal(categoria.value, 0, 'POINT', 2, 'COMMA')}">$0.00</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                      <div class="progress-bar bg-primary" 
+                           role="progressbar" 
+                           th:style="'width: ' + ${categoria.value / categoriasTop[0].value * 100} + '%'"
+                           th:attr="aria-valuenow=${categoria.value}, aria-valuemin=0, aria-valuemax=${categoriasTop[0].value}">
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -258,7 +236,7 @@
     </div>
   </div>
 
-  <!--BOOTSTRAP JS-->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <!-- SCRIPTS -->
+  <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>

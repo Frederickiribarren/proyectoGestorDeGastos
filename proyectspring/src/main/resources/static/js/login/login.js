@@ -43,11 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Función para mostrar campo válido
+    // Función para mostrar campo válido (sin borde verde)
     function showFieldValid(field, errorElement) {
         if (field) {
-            field.classList.remove('is-invalid');
-            field.classList.add('is-valid');
+            field.classList.remove('is-invalid', 'is-valid');
         }
         if (errorElement) {
             errorElement.textContent = '';
@@ -62,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailError.textContent = '';
                 emailError.classList.remove('text-danger');
             }
-            email.classList.remove('is-invalid');
+            email.classList.remove('is-invalid', 'is-valid');
         });
     }
 
@@ -72,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 passError.textContent = '';
                 passError.classList.remove('text-danger');
             }
-            pass.classList.remove('is-invalid');
+            pass.classList.remove('is-invalid', 'is-valid');
         });
     }
 
@@ -144,4 +143,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // Toggle para mostrar/ocultar contraseña
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('inputPassword');
+
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Cambiar ícono
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    }
 });
