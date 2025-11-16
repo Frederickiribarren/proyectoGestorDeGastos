@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+    <title>Ingresos - PocketBook</title>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <!--CSS-->
+  <link rel="stylesheet" th:href="@{/css/dashboard/dashboard.css}" href="/css/dashboard/dashboard.css">
+
+  <!-- CONTENEDOR PRINCIPAL CON SIDEBAR Y CONTENIDO -->
+  <div class="container-fluid">
+    <div class="row">
+      <!-- SIDEBAR -->
+      <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-3 mb-4 border-bottom">
+          <h1 class="h2 fw-bold">
+            <i class="bi bi-cash-coin text-success me-2"></i>
+            Ingresos
+          </h1>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoIngreso">
+              <i class="bi bi-plus-circle me-1"></i>
+              Nuevo Ingreso
+            </button>
+          </div>
+        </div>
+
+        <!-- RESUMEN RÁPIDO -->
+        <div class="row mb-4">
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="card border-0 bg-light shadow-sm">
+              <div class="card-body text-center py-3">
+                <i class="bi bi-calendar-check text-success fs-3 mb-2"></i>
+                <h6 class="text-muted mb-1 small">Ingresos del Mes</h6>
+                <h4 class="fw-bold mb-0 text-success" id="totalMes">$0 CLP</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="card border-0 bg-light shadow-sm">
+              <div class="card-body text-center py-3">
+                <i class="bi bi-graph-up text-primary fs-3 mb-2"></i>
+                <h6 class="text-muted mb-1 small">Promedio Mensual</h6>
+                <h4 class="fw-bold mb-0" id="promedioMensual">$0 CLP</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="card border-0 bg-light shadow-sm">
+              <div class="card-body text-center py-3">
+                <i class="bi bi-star text-warning fs-3 mb-2"></i>
+                <h6 class="text-muted mb-1 small">Tipo Principal</h6>
+                <h4 class="fw-bold mb-0" id="tipoPrincipal">-</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN DE FILTROS -->
+        <div class="row mb-4">
+          <div class="col-md-4 mb-3 mb-md-0">
+            <select class="form-select" id="filtroTipo">
+              <option value="">Todos los tipos</option>
+              <option value="sueldo">💰 Sueldo</option>
+              <option value="transferencia">💸 Transferencia</option>
+              <option value="trabajo_extra">🛠️ Trabajo Extra</option>
+              <option value="bonificacion">🎁 Bonificación</option>
+              <option value="otro">📦 Otro</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3 mb-md-0">
+            <select class="form-select" id="filtroMes">
+              <option value="">Todos los meses</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <button type="button" class="btn btn-outline-secondary w-100" id="btnLimpiarFiltros">
+              <i class="bi bi-x-circle me-1"></i>
+              Limpiar filtros
+            </button>
+          </div>
+        </div>
+
+        <!-- TABLA DE INGRESOS -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white border-0 py-3">
+            <h5 class="mb-0 fw-bold">
+              <i class="bi bi-list-ul text-success me-2"></i>
+              Lista de Ingresos
+            </h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="overflow-hidden">
+              <table class="table table-hover align-middle mb-0" id="tablaIngresos">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-4">#</th>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                    <th>Tipo</th>
+                    <th>Origen</th>
+                    <th class="text-end">Monto</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyIngresos">
+                  <tr th:if="${ingresos != null and !ingresos.isEmpty()}" 
+                      th:each="ingreso, iterStat : ${ingresos}">
+                    <td class="ps-4" th:text="${iterStat.count}">1</td>
+                    <td th:text="${#temporals.format(ingreso.fecha, 'dd/MM/yyyy')}">01/11/2024</td>
+                    <td th:text="${ingreso.descripcion}">Descripción</td>
+                    <td>
+                      <span class="badge bg-success" th:text="${ingreso.tipoIngreso}">Tipo</span>
+                    </td>
+                    <td th:text="${ingreso.origen != null ? ingreso.origen : '-'}">-</td>
+                    <td class="text-end fw-semibold text-success" 
+                        th:text="${'$' + #numbers.formatDecimal(ingreso.monto, 0, 'POINT', 0, 'COMMA') + ' CLP'}">$0 CLP</td>
+                    <td class="text-center">
+                      <button class="btn btn-sm btn-success btn-action me-1" 
+                              data-bs-toggle="modal" 
+                              data-bs-target="#modalEditarIngreso" 
+                              th:attr="data-ingreso-id=${ingreso.id}, 
+                                       data-ingreso-descripcion=${ingreso.descripcion},
+                                       data-ingreso-monto=${ingreso.monto},
+                                       data-ingreso-fecha=${ingreso.fecha},
+                                       data-ingreso-tipo=${ingreso.tipoIngreso},
+                                       data-ingreso-origen=${ingreso.origen},
+                                       data-ingreso-categoria=${ingreso.categoria}"
+                              title="Editar">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" 
+                              data-bs-toggle="modal" 
+                              data-bs-target="#modalEliminarIngreso" 
+                              th:attr="data-ingreso-id=${ingreso.id}, data-ingreso-descripcion=${ingreso.descripcion}"
+                              title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  
+                  <tr th:if="${ingresos == null or ingresos.isEmpty()}" id="emptyState">
+                    <td colspan="7" class="text-center py-5 text-muted">
+                      <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                      <p class="mb-0">No hay ingresos registrados</p>
+                      <small>Haga clic en "Nuevo Ingreso" para agregar uno</small>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL NUEVO INGRESO -->
+  <div class="modal fade" id="modalNuevoIngreso" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Registrar Ingreso</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formNuevoIngreso">
+            <div class="mb-3">
+              <label for="descripcion" class="form-label">Descripción *</label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="monto" class="form-label">Monto *</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="monto" name="monto" step="0.01" required>
+                <span class="input-group-text">CLP</span>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="fecha" class="form-label">Fecha *</label>
+              <input type="date" class="form-control" id="fecha" name="fecha" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="tipoIngreso" class="form-label">Tipo de Ingreso *</label>
+              <select class="form-select" id="tipoIngreso" name="tipoIngreso" required>
+                <option value="">Seleccionar...</option>
+                <option value="sueldo">💰 Sueldo</option>
+                <option value="transferencia">💸 Transferencia</option>
+                <option value="trabajo_extra">🛠️ Trabajo Extra</option>
+                <option value="bonificacion">🎁 Bonificación</option>
+                <option value="otro">📦 Otro</option>
+              </select>
+            </div>
+            
+            <div class="mb-3" id="divOrigen" style="display: none;">
+              <label for="origen" class="form-label">Origen / De quién</label>
+              <input type="text" class="form-control" id="origen" name="origen" 
+                     placeholder="Ej: Empresa XYZ, Juan Pérez...">
+            </div>
+            
+            <div class="mb-3">
+              <label for="categoria" class="form-label">Categoría</label>
+              <select class="form-select" id="categoria" name="categoria">
+                <option value="">Ninguna</option>
+                <option value="mensual">📅 Mensual</option>
+                <option value="eventual">🔄 Eventual</option>
+                <option value="extraordinario">⭐ Extraordinario</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-success" id="btnGuardarIngreso">
+            <i class="bi bi-save me-1"></i>Guardar Ingreso
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDITAR INGRESO -->
+  <div th:replace="~{fragments/editarIngreso :: modalEditarIngreso}"></div>
+
+  <!-- MODAL ELIMINAR INGRESO -->
+  <div class="modal fade" id="modalEliminarIngreso" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Eliminar Ingreso</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Está seguro que desea eliminar este ingreso?</p>
+          <p class="fw-bold" id="ingresoDescripcion"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">
+            <i class="bi bi-trash me-1"></i>Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <div th:replace="~{fragments/scripts :: scripts}"></div>
+  <script th:src="@{/js/ingresos/ingresos.js}" src="/js/ingresos/ingresos.js"></script>
+  <script th:src="@{/js/ingresos/editarIngreso.js}" src="/js/ingresos/editarIngreso.js"></script>
+</body>
+</html>

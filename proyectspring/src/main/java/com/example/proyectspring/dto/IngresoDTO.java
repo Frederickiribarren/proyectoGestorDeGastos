@@ -3,24 +3,33 @@ package com.example.proyectspring.dto;
 import java.time.LocalDate;
 
 public class IngresoDTO {
+    private Long id;
     private Double monto;
     private String descripcion;
     private String categoria;
     private String metodoPago;
-    private String notaAdicional;
     private LocalDate fecha;
+    private Integer numeroCuotas;
 
     public IngresoDTO() {
     }
 
     public IngresoDTO(Double monto, String descripcion, String categoria, String metodoPago, 
-                      String notaAdicional, LocalDate fecha) {
+                      LocalDate fecha) {
         this.monto = monto;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.metodoPago = metodoPago;
-        this.notaAdicional = notaAdicional;
         this.fecha = fecha;
+        this.numeroCuotas = 1;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getMonto() {
@@ -55,19 +64,19 @@ public class IngresoDTO {
         this.metodoPago = metodoPago;
     }
 
-    public String getNotaAdicional() {
-        return notaAdicional;
-    }
-
-    public void setNotaAdicional(String notaAdicional) {
-        this.notaAdicional = notaAdicional;
-    }
-
     public LocalDate getFecha() {
         return fecha;
     }
 
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
+    }
+
+    public Integer getNumeroCuotas() {
+        return numeroCuotas;
+    }
+
+    public void setNumeroCuotas(Integer numeroCuotas) {
+        this.numeroCuotas = numeroCuotas;
     }
 }

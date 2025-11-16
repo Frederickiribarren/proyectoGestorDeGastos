@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- MODAL EDITAR GASTO -->
+<div th:fragment="modalEditarGasto" class="modal fade" id="modalEditarGasto" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square me-2"></i>Editar Gasto
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarGasto">
+                    <input type="hidden" id="editGastoId" name="id">
+                    
+                    <div class="mb-3">
+                        <label for="editDescripcion" class="form-label">Descripción *</label>
+                        <input type="text" class="form-control" id="editDescripcion" name="descripcion" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editMonto" class="form-label">Monto *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="editMonto" name="monto" step="0.01" required>
+                                <span class="input-group-text">CLP</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="editFecha" class="form-label">Fecha *</label>
+                            <input type="date" class="form-control" id="editFecha" name="fecha" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editCategoria" class="form-label">Categoría *</label>
+                            <select class="form-select" id="editCategoria" name="categoria" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="alimentacion">🍔 Alimentación</option>
+                                <option value="transporte">🚗 Transporte</option>
+                                <option value="vivienda">🏠 Vivienda</option>
+                                <option value="entretenimiento">🎬 Entretenimiento</option>
+                                <option value="salud">💊 Salud</option>
+                                <option value="educacion">📚 Educación</option>
+                                <option value="servicios">💡 Servicios</option>
+                                <option value="ropa">👔 Ropa y Calzado</option>
+                                <option value="otros">📦 Otros</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="editMetodoPago" class="form-label">Método de Pago *</label>
+                            <select class="form-select" id="editMetodoPago" name="metodoPago" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="efectivo">💵 Efectivo</option>
+                                <option value="debito-santander">💳 Débito Santander</option>
+                                <option value="debito-bci">💳 Débito BCI</option>
+                                <option value="credito-santander">💳 Crédito Santander</option>
+                                <option value="credito-bci">💳 Crédito BCI</option>
+                                <option value="credito-ripley">💳 Crédito Ripley</option>
+                                <option value="credito-mach">💳 Crédito Mach</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnActualizarGasto">
+                    <i class="bi bi-save me-1"></i>Actualizar Gasto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

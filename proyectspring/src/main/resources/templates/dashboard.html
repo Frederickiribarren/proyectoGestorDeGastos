@@ -14,59 +14,7 @@
   <div class="container-fluid">
     <div class="row">
       <!-- SIDEBAR -->
-      <aside class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
-        <div class="position-sticky pt-4 px-3">
-          <div class="user-section mb-4 text-center">
-            <div class="user-avatar mb-2">
-              <i class="bi bi-person-circle text-primary" style="font-size: 3rem;"></i>
-            </div>
-            <h6 class="fw-bold mb-1" th:text="${usuario != null ? usuario.nombre + ' ' + (usuario.apellido ?: '') : 'Nombre Usuario'}">Nombre Usuario</h6>
-            <p class="text-muted small mb-0" th:text="${usuario != null ? usuario.email : 'usuario@email.com'}">usuario@email.com</p>
-          </div>
-          
-          <hr>
-          
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link active d-flex align-items-center gap-2" th:href="@{/dashboard}" href="/dashboard">
-                <i class="bi bi-house-door"></i>
-                <span>Dashboard</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" th:href="@{/gastos}" href="/gastos">
-                <i class="bi bi-receipt"></i>
-                <span>Mis Gastos</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <i class="bi bi-wallet2"></i>
-                <span>Presupuestos</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <i class="bi bi-graph-up-arrow"></i>
-                <span>Reportes</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <i class="bi bi-tag"></i>
-                <span>Categorías</span>
-              </a>
-            </li>
-            <!--SECCION PARA GESTIONAR DB DE USUARIOS -->
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" th:href="@{/gestor-usuarios}" href="/gestor-usuarios">
-                <i class="bi bi-database"></i>
-                <span>Base de Datos</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
+      <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
 
       <!-- CONTENIDO PRINCIPAL -->
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">

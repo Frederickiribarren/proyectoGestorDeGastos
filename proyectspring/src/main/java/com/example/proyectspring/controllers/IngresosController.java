@@ -14,23 +14,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.proyectspring.dto.IngresoDTO;
-import com.example.proyectspring.entity.Ingresos;
+import com.example.proyectspring.entity.IngresoMonetario;
 import com.example.proyectspring.entity.Usuario;
-import com.example.proyectspring.service.IngresosService;
+import com.example.proyectspring.service.IngresoMonetarioService;
 import com.example.proyectspring.service.UsuarioService;
 
 @Controller
-public class GastosController {
+public class IngresosController {
     
     @Autowired
     private UsuarioService usuarioService;
     
     @Autowired
-    private IngresosService ingresosService;
+    private IngresoMonetarioService ingresoMonetarioService;
     
-    @GetMapping("/gastos")
-    public String getGastos(Model model, Principal principal) {
+    @GetMapping("/ingresos")
+    public String getIngresos(Model model, Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -39,17 +38,16 @@ public class GastosController {
         Usuario usuario = usuarioService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         
-        // Obtener los gastos del usuario
-        List<Ingresos> gastos = ingresosService.obtenerIngresosPorUsuario(usuario);
+        List<IngresoMonetario> ingresos = ingresoMonetarioService.obtenerIngresosPorUsuario(usuario);
         
         model.addAttribute("usuario", usuario);
-        model.addAttribute("gastos", gastos);
-        return "gastos/gastos";
+        model.addAttribute("ingresos", ingresos);
+        return "ingresos/ingresos";
     }
     
-    @PostMapping("/gastos/guardar")
+    @PostMapping("/ingresos/guardar")
     @ResponseBody
-    public ResponseEntity<?> guardarGasto(@RequestBody IngresoDTO ingresoDTO, Principal principal) {
+    public ResponseEntity<?> guardarIngreso(@RequestBody IngresoMonetario ingreso, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).body("No autenticado");
         }
@@ -59,41 +57,47 @@ public class GastosController {
             Usuario usuario = usuarioService.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             
-            ingresosService.guardarIngreso(ingresoDTO, usuario);
-            return ResponseEntity.ok("Gasto guardado exitosamente");
+            ingreso.setUsuario(usuario);
+            ingresoMonetarioService.guardarIngreso(ingreso);
+            return ResponseEntity.ok("Ingreso guardado exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al guardar el gasto: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al guardar el ingreso: " + e.getMessage());
         }
     }
     
-    @PostMapping("/gastos/actualizar")
+    @PostMapping("/ingresos/actualizar/{id}")
     @ResponseBody
-    public ResponseEntity<?> actualizarGasto(@RequestBody IngresoDTO ingresoDTO, Principal principal) {
+    public ResponseEntity<?> actualizarIngreso(@PathVariable Long id, @RequestBody IngresoMonetario ingreso, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).body("No autenticado");
         }
         
         try {
-            ingresosService.actualizarIngreso(ingresoDTO.getId(), ingresoDTO);
-            return ResponseEntity.ok("Gasto actualizado exitosamente");
+            String email = principal.getName();
+            Usuario usuario = usuarioService.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            ingreso.setId(id);
+            ingreso.setUsuario(usuario);
+            ingresoMonetarioService.guardarIngreso(ingreso);
+            return ResponseEntity.ok("Ingreso actualizado exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al actualizar el gasto: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al actualizar el ingreso: " + e.getMessage());
         }
     }
     
-    @DeleteMapping("/gastos/eliminar/{id}")
+    @DeleteMapping("/ingresos/eliminar/{id}")
     @ResponseBody
-    public ResponseEntity<?> eliminarGasto(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<?> eliminarIngreso(@PathVariable Long id, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).body("No autenticado");
         }
         
         try {
-            ingresosService.eliminarIngreso(id);
-            return ResponseEntity.ok("Gasto eliminado exitosamente");
+            ingresoMonetarioService.eliminarIngreso(id);
+            return ResponseEntity.ok("Ingreso eliminado exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al eliminar el gasto: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al eliminar el ingreso: " + e.getMessage());
         }
     }
-    
 }

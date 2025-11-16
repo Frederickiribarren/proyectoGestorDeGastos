@@ -1,9 +1,9 @@
-// Auto-dismiss alerts después de 5 segundos
+// Auto-dismiss alerts después de 2 segundos
 document.addEventListener('DOMContentLoaded', () => {
     const alerts = document.querySelectorAll('.alert.fade.show');
     
     alerts.forEach(alert => {
-        // Auto-dismiss después de 5 segundos
+        // Auto-dismiss después de 2 segundos
         setTimeout(() => {
             // Fade out con transición
             alert.classList.remove('show');
@@ -12,6 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 alert.remove();
             }, 150); // Esperar a que termine la animación fade
-        }, 5000);
+        }, 2000);
     });
 });

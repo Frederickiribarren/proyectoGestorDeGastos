@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<!-- MODAL DE CONFIGURACIÓN DE TARJETAS DE CRÉDITO -->
+<div th:fragment="modalConfigTarjetas" class="modal fade" id="modalConfigTarjetas" tabindex="-1" aria-labelledby="modalConfigTarjetasLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="modalConfigTarjetasLabel">
+          <i class="bi bi-credit-card me-2"></i>
+          Configurar Tarjetas de Crédito
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <p class="text-muted mb-4">
+          <i class="bi bi-info-circle me-1"></i>
+          Configure las fechas de corte y pago para cada una de sus tarjetas de crédito.
+        </p>
+
+
+        <!-- Lista de tarjetas de crédito -->
+        <div class="row g-3" id="listaTarjetas">
+          <!-- Banco Chile -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-primary fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Banco Chile</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Banco Chile">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-primary w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Banco Estado -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-success fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Banco Estado</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Banco Estado">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-success w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Santander -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-danger fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Santander</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Santander">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-danger w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- BCI -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-info fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">BCI</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="BCI">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-info w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scotiabank -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-warning fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Scotiabank</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Scotiabank">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-warning w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Itaú -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-secondary fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Itaú</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Itaú">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-secondary w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Falabella CMR -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-success fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Falabella CMR</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Falabella CMR">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-success w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paris -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-danger fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Paris</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Paris">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-danger w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ripley -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-primary fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Ripley</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Ripley">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-primary w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Líder Mastercard -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-warning fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Líder Mastercard</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Líder Mastercard">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-warning w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mercado Pago -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-info fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Mercado Pago</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Mercado Pago">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-info w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tenpo -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front text-dark fs-3 me-2"></i>
+                  <h6 class="mb-0 fw-bold">Tenpo</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Tenpo">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-dark w-100 mt-2">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mach -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-credit-card-2-front fs-3 me-2" style="color: #FF6B00;"></i>
+                  <h6 class="mb-0 fw-bold">Mach</h6>
+                </div>
+                <form class="form-tarjeta" data-tarjeta="Mach">
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Corte</label>
+                      <select class="form-select form-select-sm dia-corte" name="diaCorte" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small fw-semibold">Día de Pago</label>
+                      <select class="form-select form-select-sm dia-pago" name="diaPago" required>
+                        <option value="">Seleccionar</option>
+                        <option th:each="dia : ${#numbers.sequence(1, 31)}" th:value="${dia}" th:text="${dia}">1</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm w-100 mt-2" style="background-color: #FF6B00; color: white;">
+                    <i class="bi bi-save me-1"></i>Guardar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info mt-4 mb-0">
+          <i class="bi bi-lightbulb me-2"></i>
+          <strong>Tip:</strong> Configure las fechas de corte y pago para llevar un mejor control de sus gastos con tarjeta de crédito.
+        </div>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i>
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</html>

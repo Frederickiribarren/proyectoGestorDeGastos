@@ -144,14 +144,23 @@
               </div>
             </div>
 
-            <!-- NOTAS ADICIONALES -->
-            <div class="col-12">
-              <label for="notas" class="form-label fw-semibold">
-                <i class="bi bi-sticky text-secondary me-1"></i>
-                Notas Adicionales (Opcional)
+            <!-- NÚMERO DE CUOTAS (Solo para tarjeta de crédito) -->
+            <div class="col-md-6" id="divCuotas" style="display: none;">
+              <label for="numeroCuotas" class="form-label fw-semibold">
+                <i class="bi bi-123 text-primary me-1"></i>
+                Número de Cuotas
               </label>
-              <textarea class="form-control" id="notas" name="notas" rows="3" 
-                        placeholder="Información adicional sobre el gasto..."></textarea>
+              <select class="form-select" id="numeroCuotas" name="numeroCuotas">
+                <option value="1" selected>Sin cuotas (1 pago)</option>
+                <option value="3">3 cuotas</option>
+                <option value="6">6 cuotas</option>
+                <option value="9">9 cuotas</option>
+                <option value="12">12 cuotas</option>
+                <option value="18">18 cuotas</option>
+                <option value="24">24 cuotas</option>
+                <option value="36">36 cuotas</option>
+              </select>
+              <small class="text-muted">El monto se dividirá en cuotas mensuales</small>
             </div>
 
           </div>

@@ -38,9 +38,6 @@ public class Ingresos {
     @Column(name = "metodo_pago", nullable = false)
     private String metodoPago;
     
-    @Column(name = "nota_adicional", length = 500)
-    private String notaAdicional;
-    
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fecha;
@@ -48,6 +45,27 @@ public class Ingresos {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+    
+    @Column(name = "nombre_tarjeta")
+    private String nombreTarjeta;
+    
+    @Column(name = "dia_corte")
+    private Integer diaCorte;
+    
+    @Column(name = "dia_pago")
+    private Integer diaPago;
+    
+    @Column(name = "numero_cuotas")
+    private Integer numeroCuotas;
+    
+    @Column(name = "cuota_actual")
+    private Integer cuotaActual;
+    
+    @Column(name = "monto_original")
+    private Double montoOriginal;
+    
+    @Column(name = "gasto_padre_id")
+    private Long gastoPadreId;
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
@@ -75,12 +93,11 @@ public class Ingresos {
 
     // Constructor completo
     public Ingresos(Double monto, String descripcion, String categoria, String metodoPago, 
-                    String notaAdicional, LocalDate fecha, Usuario usuario) {
+                    LocalDate fecha, Usuario usuario) {
         this.monto = monto;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.metodoPago = metodoPago;
-        this.notaAdicional = notaAdicional;
         this.fecha = fecha;
         this.usuario = usuario;
     }
@@ -126,14 +143,6 @@ public class Ingresos {
         this.metodoPago = metodoPago;
     }
 
-    public String getNotaAdicional() {
-        return notaAdicional;
-    }
-
-    public void setNotaAdicional(String notaAdicional) {
-        this.notaAdicional = notaAdicional;
-    }
-
     public LocalDate getFecha() {
         return fecha;
     }
@@ -164,5 +173,61 @@ public class Ingresos {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getNombreTarjeta() {
+        return nombreTarjeta;
+    }
+
+    public void setNombreTarjeta(String nombreTarjeta) {
+        this.nombreTarjeta = nombreTarjeta;
+    }
+
+    public Integer getDiaCorte() {
+        return diaCorte;
+    }
+
+    public void setDiaCorte(Integer diaCorte) {
+        this.diaCorte = diaCorte;
+    }
+
+    public Integer getDiaPago() {
+        return diaPago;
+    }
+
+    public void setDiaPago(Integer diaPago) {
+        this.diaPago = diaPago;
+    }
+
+    public Integer getNumeroCuotas() {
+        return numeroCuotas;
+    }
+
+    public void setNumeroCuotas(Integer numeroCuotas) {
+        this.numeroCuotas = numeroCuotas;
+    }
+
+    public Integer getCuotaActual() {
+        return cuotaActual;
+    }
+
+    public void setCuotaActual(Integer cuotaActual) {
+        this.cuotaActual = cuotaActual;
+    }
+
+    public Double getMontoOriginal() {
+        return montoOriginal;
+    }
+
+    public void setMontoOriginal(Double montoOriginal) {
+        this.montoOriginal = montoOriginal;
+    }
+
+    public Long getGastoPadreId() {
+        return gastoPadreId;
+    }
+
+    public void setGastoPadreId(Long gastoPadreId) {
+        this.gastoPadreId = gastoPadreId;
     }
 }

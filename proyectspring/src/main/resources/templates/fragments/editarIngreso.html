@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- MODAL EDITAR INGRESO -->
+<div th:fragment="modalEditarIngreso" class="modal fade" id="modalEditarIngreso" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square me-2"></i>Editar Ingreso
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarIngreso">
+                    <input type="hidden" id="editIngresoId" name="id">
+                    
+                    <div class="mb-3">
+                        <label for="editIngresoDescripcion" class="form-label">Descripción *</label>
+                        <input type="text" class="form-control" id="editIngresoDescripcion" name="descripcion" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editIngresoMonto" class="form-label">Monto *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="editIngresoMonto" name="monto" step="0.01" required>
+                            <span class="input-group-text">CLP</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editIngresoFecha" class="form-label">Fecha *</label>
+                        <input type="date" class="form-control" id="editIngresoFecha" name="fecha" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editIngresoTipo" class="form-label">Tipo de Ingreso *</label>
+                        <select class="form-select" id="editIngresoTipo" name="tipoIngreso" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="sueldo">💰 Sueldo</option>
+                            <option value="transferencia">💸 Transferencia</option>
+                            <option value="trabajo_extra">🛠️ Trabajo Extra</option>
+                            <option value="bonificacion">🎁 Bonificación</option>
+                            <option value="otro">📦 Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3" id="editDivOrigen" style="display: none;">
+                        <label for="editIngresoOrigen" class="form-label">Origen / De quién</label>
+                        <input type="text" class="form-control" id="editIngresoOrigen" name="origen" 
+                               placeholder="Ej: Empresa XYZ, Juan Pérez...">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editIngresoCategoria" class="form-label">Categoría</label>
+                        <select class="form-select" id="editIngresoCategoria" name="categoria">
+                            <option value="">Ninguna</option>
+                            <option value="mensual">📅 Mensual</option>
+                            <option value="eventual">🔄 Eventual</option>
+                            <option value="extraordinario">⭐ Extraordinario</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnActualizarIngreso">
+                    <i class="bi bi-save me-1"></i>Actualizar Ingreso
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
