@@ -51,9 +51,12 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new RuntimeException("Debes aceptar los términos y condiciones");
         }
 
+        // Formatear nombre: primera letra en mayúscula
+        String nombreFormateado = capitalizarPrimeraLetra(registroDTO.getNombre());
+
         // Crear nuevo usuario
         Usuario usuario = new Usuario();
-        usuario.setNombre(registroDTO.getNombre());
+        usuario.setNombre(nombreFormateado);
         usuario.setEmail(registroDTO.getEmail());
         usuario.setPassword(passwordEncoder.encode(registroDTO.getPassword())); // Encriptar contraseña
         usuario.setRol("USER"); // Rol por defecto
@@ -61,6 +64,30 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setActivo(true);
 
         return usuarioDao.save(usuario);
+    }
+    
+    /**
+     * Capitaliza la primera letra de cada palabra en un texto
+     * @param texto El texto a capitalizar
+     * @return El texto con la primera letra de cada palabra en mayúscula
+     */
+    private String capitalizarPrimeraLetra(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return texto;
+        }
+        
+        String[] palabras = texto.trim().split("\\s+");
+        StringBuilder resultado = new StringBuilder();
+        
+        for (String palabra : palabras) {
+            if (!palabra.isEmpty()) {
+                resultado.append(Character.toUpperCase(palabra.charAt(0)))
+                         .append(palabra.substring(1).toLowerCase())
+                         .append(" ");
+            }
+        }
+        
+        return resultado.toString().trim();
     }
 
     @Override
@@ -101,10 +128,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         
         // Actualizar solo los campos proporcionados
         if (perfilDTO.getNombre() != null && !perfilDTO.getNombre().isEmpty()) {
-            usuario.setNombre(perfilDTO.getNombre());
+            usuario.setNombre(capitalizarPrimeraLetra(perfilDTO.getNombre()));
         }
         if (perfilDTO.getApellido() != null && !perfilDTO.getApellido().isEmpty()) {
-            usuario.setApellido(perfilDTO.getApellido());
+            usuario.setApellido(capitalizarPrimeraLetra(perfilDTO.getApellido()));
         }
         if (perfilDTO.getTelefono() != null) {
             usuario.setTelefono(perfilDTO.getTelefono());

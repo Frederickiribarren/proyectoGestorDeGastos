@@ -1,9 +1,11 @@
 package com.example.proyectspring.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,40 +24,74 @@ import jakarta.persistence.TemporalType;
 public class Ingresos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false)
     private Double monto;
+    
+    @Column(nullable = false)
     private String descripcion;
+    
+    @Column(nullable = false)
     private String categoria;
-    private String tipoPago;
+    
+    @Column(name = "metodo_pago", nullable = false)
+    private String metodoPago;
+    
+    @Column(name = "nota_adicional", length = 500)
     private String notaAdicional;
-    private String fecha;
+    
+    @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fecha;
+    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuarioId;
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "dd-MM-yyy")
-    private Date creatAt;
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "dd-MM-yyy")
-    private Date updateAt;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date createdAt;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date updatedAt;
 
     @PrePersist
     protected void prePersist() {
-        this.creatAt = new Date();
+        this.createdAt = new Date();
     }
 
     @PreUpdate
-    protected void PreUpdate() {
-        this.updateAt = new Date();
+    protected void preUpdate() {
+        this.updatedAt = new Date();
     }
 
-    public Ingresos(Double monto, String descripcion, String categoria, String tipoPago, String notaAdicional,
-            String fecha) {
+    // Constructor vacío
+    public Ingresos() {
+    }
+
+    // Constructor completo
+    public Ingresos(Double monto, String descripcion, String categoria, String metodoPago, 
+                    String notaAdicional, LocalDate fecha, Usuario usuario) {
         this.monto = monto;
         this.descripcion = descripcion;
         this.categoria = categoria;
-        this.tipoPago = tipoPago;
+        this.metodoPago = metodoPago;
         this.notaAdicional = notaAdicional;
         this.fecha = fecha;
+        this.usuario = usuario;
+    }
+
+    // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getMonto() {
@@ -64,7 +100,6 @@ public class Ingresos {
 
     public void setMonto(Double monto) {
         this.monto = monto;
-
     }
 
     public String getDescripcion() {
@@ -83,12 +118,12 @@ public class Ingresos {
         this.categoria = categoria;
     }
 
-    public String getTipoPago() {
-        return tipoPago;
+    public String getMetodoPago() {
+        return metodoPago;
     }
 
-    public void setTipoPago(String tipoPago) {
-        this.tipoPago = tipoPago;
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
     }
 
     public String getNotaAdicional() {
@@ -99,27 +134,35 @@ public class Ingresos {
         this.notaAdicional = notaAdicional;
     }
 
-    public String getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
-    public Date getCreatAt() {
-        return creatAt;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setCreatAt(Date creatAt) {
-        this.creatAt = creatAt;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public Date getUpdateAt() {
-        return updateAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

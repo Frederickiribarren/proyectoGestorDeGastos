@@ -19,18 +19,46 @@
     </main>
 
     <div class="table-responsive container my-4">
-        <table class="table">
-            <thead>
+        <table class="table table-hover">
+            <thead class="table-light">
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellido</th>
                     <th scope="col">Correo</th>
-                    <th scope="col">Password</th>
-                    <th scope="col">Fecha de Creación</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col">Fecha de Registro</th>
+                    <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody>
+                <tr th:each="user : ${usuarios}">
+                    <td th:text="${user.id}">1</td>
+                    <td th:text="${user.nombre}">Nombre</td>
+                    <td th:text="${user.apellido ?: 'N/A'}">Apellido</td>
+                    <td th:text="${user.email}">email@ejemplo.com</td>
+                    <td>
+                        <span th:if="${user.rol == 'ROLE_ADMIN'}" class="badge bg-danger">Admin</span>
+                        <span th:if="${user.rol == 'ROLE_USER'}" class="badge bg-primary">Usuario</span>
+                        <span th:if="${user.rol != 'ROLE_ADMIN' && user.rol != 'ROLE_USER'}" 
+                              class="badge bg-secondary" th:text="${user.rol}">Rol</span>
+                    </td>
+                    <td th:text="${#temporals.format(user.fechaRegistro, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" title="Ver detalles">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(usuarios)}">
+                    <td colspan="7" class="text-center text-muted">No hay usuarios registrados</td>
+                </tr>
             </tbody>
         </table>
     </div>

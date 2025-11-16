@@ -5,6 +5,47 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('modalNuevoGasto');
     const fechaInput = document.getElementById('fecha');
     
+    // Dropdown personalizado para método de pago
+    const dropdownItems = document.querySelectorAll('.dropdown-menu .dropdown-item');
+    const selectedMetodo = document.getElementById('selectedMetodo');
+    const metodoPagoInput = document.getElementById('metodoPago');
+    
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const value = this.getAttribute('data-value');
+            
+            // Obtener el header (grupo) más cercano hacia arriba
+            let categoria = '';
+            let prevElement = this.closest('li').previousElementSibling;
+            
+            // Buscar hacia atrás hasta encontrar un header
+            while (prevElement) {
+                if (prevElement.querySelector('.dropdown-header')) {
+                    categoria = prevElement.querySelector('.dropdown-header').textContent.trim();
+                    break;
+                }
+                prevElement = prevElement.previousElementSibling;
+            }
+            
+            // Construir el texto a mostrar
+            let displayText;
+            if (categoria && value !== 'efectivo' && value !== 'otro') {
+                // Remover el emoji del inicio del texto de categoría
+                categoria = categoria.replace(/^[\u{1F300}-\u{1F9FF}]\s*/u, '');
+                displayText = categoria + ' / ' + this.textContent.trim();
+            } else {
+                displayText = this.textContent.trim();
+            }
+            
+            selectedMetodo.textContent = displayText;
+            selectedMetodo.classList.remove('text-muted');
+            selectedMetodo.classList.add('text-dark');
+            metodoPagoInput.value = value;
+            metodoPagoInput.classList.remove('is-invalid');
+        });
+    });
+    
     // Array para almacenar los gastos (simulando base de datos)
     let gastos = [];
     let contadorId = 1;
