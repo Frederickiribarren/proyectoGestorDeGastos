@@ -15,4 +15,6 @@ public interface ConfiguracionTarjetaRepository extends JpaRepository<Configurac
     List<ConfiguracionTarjeta> findByUsuario(Usuario usuario);
     
     Optional<ConfiguracionTarjeta> findByUsuarioAndNombreTarjeta(Usuario usuario, String nombreTarjeta);
+    
+    void deleteByUsuario(Usuario usuario);
 }

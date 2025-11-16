@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public class EliminarCuentaDTO {
     
-    @NotBlank(message = "La palabra de seguridad es obligatoria")
+    // La palabra de seguridad es opcional, solo se valida si el usuario la tiene configurada
     private String palabraSeguridad;
     
     @NotBlank(message = "La contraseña es obligatoria")

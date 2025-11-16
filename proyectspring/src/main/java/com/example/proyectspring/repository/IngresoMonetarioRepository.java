@@ -17,4 +17,6 @@ public interface IngresoMonetarioRepository extends JpaRepository<IngresoMonetar
     List<IngresoMonetario> findByUsuarioAndTipoIngresoOrderByFechaDesc(Usuario usuario, String tipoIngreso);
     
     List<IngresoMonetario> findByUsuarioAndFechaBetweenOrderByFechaDesc(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin);
+    
+    void deleteByUsuario(Usuario usuario);
 }

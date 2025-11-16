@@ -4,11 +4,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.proyectspring.dao.IUsuarioDao;
+import com.example.proyectspring.dao.IIngresosDao;
+import com.example.proyectspring.repository.IngresoMonetarioRepository;
+import com.example.proyectspring.repository.ConfiguracionTarjetaRepository;
 import com.example.proyectspring.dto.PerfilDTO;
 import com.example.proyectspring.dto.RegistroDTO;
 import com.example.proyectspring.dto.SeguridadDTO;
@@ -21,6 +25,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     
     private final IUsuarioDao usuarioDao;
     private final PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private IIngresosDao ingresosDao;
+    
+    @Autowired
+    private IngresoMonetarioRepository ingresoMonetarioRepository;
+    
+    @Autowired
+    private ConfiguracionTarjetaRepository configuracionTarjetaRepository;
 
     public UsuarioServiceImpl(IUsuarioDao usuarioDao, PasswordEncoder passwordEncoder) {
         this.usuarioDao = usuarioDao;
@@ -213,14 +226,27 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new Exception("Contraseña incorrecta");
         }
         
-        // Verificar palabra de seguridad
-        if (usuario.getPalabraSeguridad() != null) {
+        // Verificar palabra de seguridad solo si el usuario la tiene configurada
+        if (usuario.getPalabraSeguridad() != null && !usuario.getPalabraSeguridad().isEmpty()) {
+            if (eliminarCuentaDTO.getPalabraSeguridad() == null || eliminarCuentaDTO.getPalabraSeguridad().isEmpty()) {
+                throw new Exception("Debe ingresar la palabra de seguridad");
+            }
             if (!passwordEncoder.matches(eliminarCuentaDTO.getPalabraSeguridad(), usuario.getPalabraSeguridad())) {
                 throw new Exception("Palabra de seguridad incorrecta");
             }
         }
         
-        // Eliminar permanentemente
+        // Eliminar datos relacionados en cascada
+        // 1. Eliminar todos los gastos del usuario
+        ingresosDao.deleteByUsuario(usuario);
+        
+        // 2. Eliminar todos los ingresos monetarios del usuario
+        ingresoMonetarioRepository.deleteByUsuario(usuario);
+        
+        // 3. Eliminar configuraciones de tarjetas del usuario
+        configuracionTarjetaRepository.deleteByUsuario(usuario);
+        
+        // 4. Finalmente eliminar el usuario
         usuarioDao.deleteById(id);
     }
 

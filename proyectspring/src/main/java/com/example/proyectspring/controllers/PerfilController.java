@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +25,8 @@ import com.example.proyectspring.dto.EliminarCuentaDTO;
 import com.example.proyectspring.entity.Usuario;
 import com.example.proyectspring.service.UsuarioService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @Controller
@@ -179,7 +184,9 @@ public class PerfilController {
     public String eliminarCuenta(@Valid @ModelAttribute EliminarCuentaDTO eliminarCuentaDTO,
                                  BindingResult result,
                                  Principal principal,
-                                 RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -194,7 +201,14 @@ public class PerfilController {
             Usuario usuario = usuarioService.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             
+            // Eliminar cuenta permanentemente
             usuarioService.eliminarCuentaPermanentemente(usuario.getId(), eliminarCuentaDTO);
+            
+            // Cerrar sesión manualmente
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) {
+                new SecurityContextLogoutHandler().logout(request, response, auth);
+            }
             
             // Redirigir al login con mensaje de cuenta eliminada
             redirectAttributes.addFlashAttribute("mensajeEliminacion", "Tu cuenta ha sido eliminada permanentemente");
