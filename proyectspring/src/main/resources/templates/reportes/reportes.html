@@ -87,9 +87,19 @@
               Análisis detallado de tus gastos e ingresos
             </p>
           </div>
-          <div class="text-muted small">
-            <i class="bi bi-calendar3 me-1"></i>
-            <span id="fechaActual"></span>
+          <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+              <label for="filtroMesReporte" class="form-label mb-0 text-muted small">
+                <i class="bi bi-calendar3 me-1"></i>
+                Mes:
+              </label>
+              <select id="filtroMesReporte" class="form-select form-select-sm" style="width: 200px;">
+                <!-- Se pobla dinámicamente -->
+              </select>
+            </div>
+            <div class="text-muted small">
+              <span id="fechaActual"></span>
+            </div>
           </div>
         </div>
 

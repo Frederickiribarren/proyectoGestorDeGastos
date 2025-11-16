@@ -31,8 +31,36 @@ function formatearPesos(monto) {
 // Variables para los gráficos
 let chartGastosIngresos, chartCategorias, chartMetodosPago, chartTiposIngreso, chartTendencia;
 
+// Variable para el mes seleccionado (por defecto el actual)
+let mesSeleccionado = null;
+let anioSeleccionado = null;
+
 // Cargar datos al iniciar
 document.addEventListener('DOMContentLoaded', function() {
+    // Establecer mes y año actual por defecto
+    const hoy = new Date();
+    mesSeleccionado = hoy.getMonth() + 1; // getMonth() retorna 0-11
+    anioSeleccionado = hoy.getFullYear();
+    
+    // Poblar filtro de meses
+    poblarFiltroMeses();
+    
+    // Agregar evento al filtro de mes
+    document.getElementById('filtroMesReporte').addEventListener('change', function() {
+        const valor = this.value;
+        if (valor) {
+            const [anio, mes] = valor.split('-');
+            anioSeleccionado = parseInt(anio);
+            mesSeleccionado = parseInt(mes);
+            
+            // Recargar todos los gráficos con el nuevo mes
+            cargarEstadisticas();
+            cargarGraficoCategorias();
+            cargarGraficoMetodosPago();
+            cargarGraficoTiposIngreso();
+        }
+    });
+    
     cargarEstadisticas();
     cargarGraficoGastosIngresos();
     cargarGraficoCategorias();
@@ -40,10 +68,37 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarGraficoTiposIngreso();
 });
 
+// Poblar filtro de meses
+function poblarFiltroMeses() {
+    const filtroMes = document.getElementById('filtroMesReporte');
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    const fechaActual = new Date();
+    const mesActual = fechaActual.getMonth();
+    const anioActual = fechaActual.getFullYear();
+    
+    // Generar últimos 12 meses
+    for (let i = 0; i < 12; i++) {
+        const mes = (mesActual - i + 12) % 12;
+        const anio = mesActual - i < 0 ? anioActual - 1 : anioActual;
+        const option = document.createElement('option');
+        option.value = `${anio}-${String(mes + 1).padStart(2, '0')}`;
+        option.textContent = `${meses[mes]} ${anio}`;
+        filtroMes.appendChild(option);
+    }
+    
+    // Seleccionar mes actual por defecto
+    filtroMes.value = `${anioActual}-${String(mesActual + 1).padStart(2, '0')}`;
+}
+
 // Cargar estadísticas generales
 async function cargarEstadisticas() {
     try {
-        const response = await fetch('/reportes/estadisticas-mes');
+        const params = mesSeleccionado && anioSeleccionado 
+            ? `?mes=${mesSeleccionado}&anio=${anioSeleccionado}` 
+            : '';
+        const response = await fetch(`/reportes/estadisticas-mes${params}`);
         const data = await response.json();
 
         document.getElementById('totalGastosMes').textContent = formatearPesos(data.totalGastos);
@@ -178,7 +233,10 @@ async function cargarGraficoGastosIngresos() {
 // Gráfico Circular: Categorías
 async function cargarGraficoCategorias() {
     try {
-        const response = await fetch('/reportes/categorias-gastos');
+        const params = mesSeleccionado && anioSeleccionado 
+            ? `?mes=${mesSeleccionado}&anio=${anioSeleccionado}` 
+            : '';
+        const response = await fetch(`/reportes/categorias-gastos${params}`);
         const data = await response.json();
 
         if (data.labels.length === 0) {
@@ -254,7 +312,10 @@ async function cargarGraficoCategorias() {
 // Gráfico Circular: Métodos de Pago
 async function cargarGraficoMetodosPago() {
     try {
-        const response = await fetch('/reportes/metodos-pago');
+        const params = mesSeleccionado && anioSeleccionado 
+            ? `?mes=${mesSeleccionado}&anio=${anioSeleccionado}` 
+            : '';
+        const response = await fetch(`/reportes/metodos-pago${params}`);
         const data = await response.json();
 
         if (data.labels.length === 0) {
@@ -330,7 +391,10 @@ async function cargarGraficoMetodosPago() {
 // Gráfico Circular: Tipos de Ingreso
 async function cargarGraficoTiposIngreso() {
     try {
-        const response = await fetch('/reportes/tipos-ingreso');
+        const params = mesSeleccionado && anioSeleccionado 
+            ? `?mes=${mesSeleccionado}&anio=${anioSeleccionado}` 
+            : '';
+        const response = await fetch(`/reportes/tipos-ingreso${params}`);
         const data = await response.json();
 
         if (data.labels.length === 0) {

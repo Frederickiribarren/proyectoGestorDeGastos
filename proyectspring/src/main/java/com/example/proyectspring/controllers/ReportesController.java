@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
@@ -104,7 +105,9 @@ public class ReportesController {
 
     @GetMapping("/categorias-gastos")
     @ResponseBody
-    public Map<String, Object> getCategoriasGastos(Authentication auth) {
+    public Map<String, Object> getCategoriasGastos(Authentication auth,
+                                                     @RequestParam(required = false) Integer mes,
+                                                     @RequestParam(required = false) Integer anio) {
         String email = auth.getName();
         Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
         
@@ -113,12 +116,12 @@ public class ReportesController {
         }
         
         Usuario usuario = usuarioOpt.get();
-        YearMonth mesActual = YearMonth.now();
+        YearMonth mesConsulta = obtenerMesConsulta(mes, anio);
 
         Map<String, Double> categorias = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(gasto -> {
                     LocalDate fecha = gasto.getFecha();
-                    return YearMonth.from(fecha).equals(mesActual);
+                    return YearMonth.from(fecha).equals(mesConsulta);
                 })
                 .collect(Collectors.groupingBy(
                         Ingresos::getCategoria,
@@ -137,7 +140,9 @@ public class ReportesController {
 
     @GetMapping("/metodos-pago")
     @ResponseBody
-    public Map<String, Object> getMetodosPago(Authentication auth) {
+    public Map<String, Object> getMetodosPago(Authentication auth,
+                                               @RequestParam(required = false) Integer mes,
+                                               @RequestParam(required = false) Integer anio) {
         String email = auth.getName();
         Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
         
@@ -146,12 +151,12 @@ public class ReportesController {
         }
         
         Usuario usuario = usuarioOpt.get();
-        YearMonth mesActual = YearMonth.now();
+        YearMonth mesConsulta = obtenerMesConsulta(mes, anio);
 
         Map<String, Double> metodos = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(gasto -> {
                     LocalDate fecha = gasto.getFecha();
-                    return YearMonth.from(fecha).equals(mesActual);
+                    return YearMonth.from(fecha).equals(mesConsulta);
                 })
                 .collect(Collectors.groupingBy(
                         Ingresos::getMetodoPago,
@@ -170,7 +175,9 @@ public class ReportesController {
 
     @GetMapping("/tipos-ingreso")
     @ResponseBody
-    public Map<String, Object> getTiposIngreso(Authentication auth) {
+    public Map<String, Object> getTiposIngreso(Authentication auth,
+                                                @RequestParam(required = false) Integer mes,
+                                                @RequestParam(required = false) Integer anio) {
         String email = auth.getName();
         Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
         
@@ -179,12 +186,12 @@ public class ReportesController {
         }
         
         Usuario usuario = usuarioOpt.get();
-        YearMonth mesActual = YearMonth.now();
+        YearMonth mesConsulta = obtenerMesConsulta(mes, anio);
 
         Map<String, Double> tipos = ingresoMonetarioService.obtenerIngresosPorUsuario(usuario).stream()
                 .filter(ingreso -> {
                     LocalDate fecha = ingreso.getFecha();
-                    return YearMonth.from(fecha).equals(mesActual);
+                    return YearMonth.from(fecha).equals(mesConsulta);
                 })
                 .collect(Collectors.groupingBy(
                         IngresoMonetario::getTipoIngreso,
@@ -203,7 +210,9 @@ public class ReportesController {
 
     @GetMapping("/estadisticas-mes")
     @ResponseBody
-    public Map<String, Object> getEstadisticasMes(Authentication auth) {
+    public Map<String, Object> getEstadisticasMes(Authentication auth,
+                                                    @RequestParam(required = false) Integer mes,
+                                                    @RequestParam(required = false) Integer anio) {
         String email = auth.getName();
         Optional<Usuario> usuarioOpt = usuarioService.findByEmail(email);
         
@@ -212,7 +221,7 @@ public class ReportesController {
         }
         
         Usuario usuario = usuarioOpt.get();
-        YearMonth mesActual = YearMonth.now();
+        YearMonth mesActual = obtenerMesConsulta(mes, anio);
 
         // Total gastos del mes
         double totalGastos = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
@@ -262,5 +271,13 @@ public class ReportesController {
         response.put("promedioIngresosDiario", promedioIngresosDiario);
 
         return response;
+    }
+    
+    // Método helper para obtener el mes de consulta
+    private YearMonth obtenerMesConsulta(Integer mes, Integer anio) {
+        if (mes != null && anio != null) {
+            return YearMonth.of(anio, mes);
+        }
+        return YearMonth.now();
     }
 }
