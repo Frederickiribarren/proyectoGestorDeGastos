@@ -18,7 +18,7 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class EmailServiceImpl implements IEmailService {
 
-    @Value("${email.sender}")
+    @Value("${spring.mail.username}")
     private String emailUser;
 
     @Autowired
@@ -38,6 +38,23 @@ public class EmailServiceImpl implements IEmailService {
     }
 
     @Override
+    public void sendHtmlEmail(String toUser, String subject, String htmlContent) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
+            
+            helper.setFrom(emailUser);
+            helper.setTo(toUser);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true); // true = HTML
+            
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error al enviar email HTML", e);
+        }
+    }
+
+    @Override
     public void sendEmailWithFile(String toUser, String subject, String message, File file) {
 
         try {
@@ -47,13 +64,13 @@ public class EmailServiceImpl implements IEmailService {
             mimeMessageHelper.setFrom(emailUser);
             mimeMessageHelper.setTo(toUser);
             mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setText(message);
+            mimeMessageHelper.setText(message, true); // true = HTML
             mimeMessageHelper.addAttachment(file.getName(), file);
             
             mailSender.send(mimeMessage);
 
         } catch (MessagingException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error al enviar email con archivo", e);
         }
         
     }

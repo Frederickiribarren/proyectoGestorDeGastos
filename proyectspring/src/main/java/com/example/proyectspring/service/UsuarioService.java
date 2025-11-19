@@ -36,6 +36,11 @@ public interface UsuarioService {
     
     void eliminarCuentaPermanentemente(Long id, EliminarCuentaDTO eliminarCuentaDTO) throws Exception;
     
+    // Métodos de recuperación de contraseña
+    Usuario buscarPorEmail(String email);
+    
+    void actualizarPassword(Long usuarioId, String nuevaPassword);
+    
     // Métodos legacy para compatibilidad
     List<Usuario> findAll();
     Usuario findOne(Long id);

@@ -9,205 +9,27 @@
     <link rel="stylesheet" th:href="@{/css/dashboard/dashboard.css}" href="/css/dashboard/dashboard.css">
     
     <!-- NAVBAR -->
-    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="container py-5">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-3 mb-4 border-bottom">
-          <div>
-            <h1 class="h2 fw-bold mb-1">
-              <i class="bi bi-gear text-primary me-2"></i>
-              Configuración
-            </h1>
-            <p class="text-muted mb-0">Personaliza tu experiencia en PocketBook</p>
-          </div>
-        </div>
-
-        <!-- APARIENCIA -->
-        <div class="card border-0 shadow-sm mb-4">
-          <div class="card-header bg-white border-0 py-3">
-            <h5 class="mb-0 fw-bold">
-              <i class="bi bi-palette text-primary me-2"></i>
-              Apariencia
-            </h5>
-          </div>
-          <div class="card-body p-4">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="language" class="form-label fw-semibold">Idioma</label>
-                <select class="form-select" id="language" th:value="${config.idioma}">
-                  <option value="es" th:selected="${config.idioma == 'es'}">🇨🇱 Español</option>
-                  <option value="en" th:selected="${config.idioma == 'en'}">🇺🇸 English</option>
-                  <option value="pt" th:selected="${config.idioma == 'pt'}">🇧🇷 Português</option>
-                  <option value="fr" th:selected="${config.idioma == 'fr'}">🇫🇷 Français</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="currency" class="form-label fw-semibold">Moneda</label>
-                <select class="form-select" id="currency" th:value="${config.moneda}">
-                  <option value="CLP" th:selected="${config.moneda == 'CLP'}">Peso Chileno (CLP)</option>
-                  <option value="USD" th:selected="${config.moneda == 'USD'}">Dólar Estadounidense (USD)</option>
-                  <option value="EUR" th:selected="${config.moneda == 'EUR'}">Euro (EUR)</option>
-                  <option value="ARS" th:selected="${config.moneda == 'ARS'}">Peso Argentino (ARS)</option>
-                  <option value="PEN" th:selected="${config.moneda == 'PEN'}">Sol Peruano (PEN)</option>
-                  <option value="COP" th:selected="${config.moneda == 'COP'}">Peso Colombiano (COP)</option>
-                  <option value="MXN" th:selected="${config.moneda == 'MXN'}">Peso Mexicano (MXN)</option>
-                </select>
-              </div>
-            </div>
-            <div class="mt-3">
-              <button class="btn btn-primary" id="btnGuardarApariencia">
-                <i class="bi bi-check-circle me-2"></i>Guardar Cambios
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- NOTIFICACIONES -->
-        <div class="card border-0 shadow-sm mb-4">
-          <div class="card-header bg-white border-0 py-3">
-            <h5 class="mb-0 fw-bold">
-              <i class="bi bi-bell text-primary me-2"></i>
-              Notificaciones
-            </h5>
-          </div>
-          <div class="card-body p-4">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="notif-email" 
-                         th:checked="${config.notifEmail}">
-                  <label class="form-check-label" for="notif-email">
-                    <strong>Notificaciones por Email</strong>
-                    <br><small class="text-muted">Recibe actualizaciones importantes</small>
-                  </label>
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="notif-transacciones" 
-                         th:checked="${config.notifTransacciones}">
-                  <label class="form-check-label" for="notif-transacciones">
-                    <strong>Alertas de Transacciones</strong>
-                    <br><small class="text-muted">Notificar nuevas transacciones</small>
-                  </label>
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="notif-presupuesto"
-                         th:checked="${config.notifPresupuesto}">
-                  <label class="form-check-label" for="notif-presupuesto">
-                    <strong>Alertas de Presupuesto</strong>
-                    <br><small class="text-muted">Avisar límites de presupuesto</small>
-                  </label>
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="notif-reportes"
-                         th:checked="${config.notifReportes}">
-                  <label class="form-check-label" for="notif-reportes">
-                    <strong>Reportes Mensuales</strong>
-                    <br><small class="text-muted">Resumen mensual por email</small>
-                  </label>
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="notif-promociones"
-                         th:checked="${config.notifPromociones}">
-                  <label class="form-check-label" for="notif-promociones">
-                    <strong>Promociones y Novedades</strong>
-                    <br><small class="text-muted">Nuevas funcionalidades</small>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="mt-3">
-              <button class="btn btn-primary" id="btnGuardarNotificaciones">
-                <i class="bi bi-check-circle me-2"></i>Guardar Cambios
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- SEGURIDAD -->
-        <div class="card border-0 shadow-sm mb-4">
-          <div class="card-header bg-white border-0 py-3">
-            <h5 class="mb-0 fw-bold">
-              <i class="bi bi-shield-lock text-primary me-2"></i>
-              Seguridad
-            </h5>
-          </div>
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <h6 class="fw-semibold mb-1">Autenticación de Dos Factores</h6>
-                <p class="text-muted mb-0 small">Añade seguridad extra a tu cuenta</p>
-              </div>
-              <button class="btn btn-sm" id="btn2FA" 
-                      th:classappend="${config.autenticacionDosFactores ? 'btn-success' : 'btn-outline-secondary'}">
-                <i class="bi me-1" th:classappend="${config.autenticacionDosFactores ? 'bi-toggle-on' : 'bi-toggle-off'}"></i>
-                <span th:text="${config.autenticacionDosFactores ? 'Activado' : 'Desactivado'}">Desactivado</span>
-              </button>
-            </div>
-            <hr>
-            <div>
-              <h6 class="fw-semibold mb-2">Sesión Actual</h6>
-              <div class="card border-0 bg-light">
-                <div class="card-body py-2">
-                  <div class="d-flex align-items-center">
-                    <i class="bi bi-laptop text-primary fs-4 me-3"></i>
-                    <div>
-                      <strong>Navegador actual</strong>
-                      <br><small class="text-muted">Última actividad: Hoy</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- DATOS -->
-        <div class="card border-0 shadow-sm mb-4">
-          <div class="card-header bg-white border-0 py-3">
-            <h5 class="mb-0 fw-bold">
-              <i class="bi bi-database text-primary me-2"></i>
-              Gestión de Datos
-            </h5>
-          </div>
-          <div class="card-body p-4">
-            <div class="mb-4">
-              <h6 class="fw-semibold mb-2">Exportar Datos</h6>
-              <p class="text-muted small mb-3">Descarga tus gastos e ingresos del mes actual</p>
-              <a href="/configuracion/exportar/csv" class="btn btn-sm btn-outline-primary me-2" download>
-                <i class="bi bi-download me-1"></i>Exportar CSV
-              </a>
-              <a href="/configuracion/exportar/pdf" class="btn btn-sm btn-outline-primary" download>
-                <i class="bi bi-file-earmark-pdf me-1"></i>Exportar PDF
-              </a>
-            </div>
-            <hr>
-            <div>
-              <h6 class="fw-semibold mb-2">Limpieza de Datos</h6>
-              <p class="text-muted small mb-3">Gestiona el almacenamiento de tu información</p>
-              <button class="btn btn-sm btn-outline-secondary" id="btnArchivarDatos">
-                <i class="bi bi-archive me-1"></i>Archivar datos antiguos
-              </button>
-            </div>
-          </div>
-        </div>
-    </div>
-
-  <!-- SCRIPTS -->
-  <div th:replace="~{fragments/scripts :: scripts}"></div>
-  
-  <script>
-    // Obtener token CSRF
-    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    <script th:src="@{/js/configuracion/configuracion.js}" src="/js/configuracion/configuracion.js"></script>
+        const response = await fetch('/api/notificaciones/configuracion', {
+          method: 'GET',
+          headers: headers
+        });
+        
+        if (response.ok) {
+          const config = await response.json();
+          document.getElementById('notif-email').checked = config.notificacionesEmail;
+          document.getElementById('notif-transacciones').checked = config.alertasTransacciones;
+          document.getElementById('notif-presupuesto').checked = config.alertasPresupuesto;
+          document.getElementById('notif-reportes').checked = config.reportesMensuales;
+          document.getElementById('notif-promociones').checked = config.promociones;
+        }
+      } catch (error) {
+        console.error('Error al cargar configuración de notificaciones:', error);
+      }
+    }
+    
+    // Cargar al iniciar la página
+    cargarConfiguracionNotificaciones();
     
     // Guardar apariencia
     document.getElementById('btnGuardarApariencia').addEventListener('click', async function() {
@@ -275,21 +97,19 @@
           headers[csrfHeader] = csrfToken;
         }
         
-        const response = await fetch('/configuracion/notificaciones', {
+        const response = await fetch('/api/notificaciones/configuracion', {
           method: 'POST',
           headers: headers,
           body: JSON.stringify({
-            notifEmail: document.getElementById('notif-email').checked,
-            notifTransacciones: document.getElementById('notif-transacciones').checked,
-            notifPresupuesto: document.getElementById('notif-presupuesto').checked,
-            notifReportes: document.getElementById('notif-reportes').checked,
-            notifPromociones: document.getElementById('notif-promociones').checked
+            notificacionesEmail: document.getElementById('notif-email').checked,
+            alertasTransacciones: document.getElementById('notif-transacciones').checked,
+            alertasPresupuesto: document.getElementById('notif-presupuesto').checked,
+            reportesMensuales: document.getElementById('notif-reportes').checked,
+            promociones: document.getElementById('notif-promociones').checked
           })
         });
         
-        const data = await response.json();
-        
-        if (data.success) {
+        if (response.ok) {
           btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>¡Guardado!';
           btn.classList.remove('btn-primary');
           btn.classList.add('btn-success');
@@ -300,7 +120,7 @@
             btn.disabled = false;
           }, 1500);
         } else {
-          throw new Error(data.message);
+          throw new Error('Error al guardar');
         }
       } catch (error) {
         console.error('Error al guardar notificaciones:', error);

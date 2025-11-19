@@ -262,6 +262,23 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioDao.deleteById(id);
     }
 
+    // Métodos de recuperación de contraseña
+    @Override
+    @Transactional(readOnly = true)
+    public Usuario buscarPorEmail(String email) {
+        return usuarioDao.findByEmail(email).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public void actualizarPassword(Long usuarioId, String nuevaPassword) {
+        Usuario usuario = usuarioDao.findById(usuarioId)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        usuario.setPassword(passwordEncoder.encode(nuevaPassword));
+        usuarioDao.save(usuario);
+    }
+
     // Métodos legacy para compatibilidad
     @Override
     @Transactional(readOnly = true)
