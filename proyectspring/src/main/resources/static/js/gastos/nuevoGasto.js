@@ -146,9 +146,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Establecer la fecha actual por defecto
     if (fechaInput) {
-        const hoy = new Date().toISOString().split('T')[0];
-        fechaInput.value = hoy;
-        fechaInput.max = hoy; // No permitir fechas futuras
+        const hoy = new Date();
+        const fechaLocal = hoy.getFullYear() + '-' + 
+                          String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
+                          String(hoy.getDate()).padStart(2, '0');
+        fechaInput.value = fechaLocal;
+        fechaInput.max = fechaLocal; // No permitir fechas futuras
     }
     
     // Función para limpiar errores
@@ -751,8 +754,11 @@ document.addEventListener('DOMContentLoaded', function() {
             form.reset();
             limpiarErrores();
             // Restablecer fecha actual
-            const hoy = new Date().toISOString().split('T')[0];
-            fechaInput.value = hoy;
+            const hoy = new Date();
+            const fechaLocal = hoy.getFullYear() + '-' + 
+                              String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(hoy.getDate()).padStart(2, '0');
+            fechaInput.value = fechaLocal;
         });
     }
 });

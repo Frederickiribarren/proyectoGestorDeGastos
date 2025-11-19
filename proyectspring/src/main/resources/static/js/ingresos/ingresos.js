@@ -8,7 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Establecer fecha actual por defecto
     if (fechaInput) {
-        fechaInput.valueAsDate = new Date();
+        const hoy = new Date();
+        const fechaLocal = hoy.getFullYear() + '-' + 
+                          String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
+                          String(hoy.getDate()).padStart(2, '0');
+        fechaInput.value = fechaLocal;
     }
     
     // Mostrar/ocultar campo origen según tipo de ingreso
@@ -116,7 +120,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     const modalInstance = bootstrap.Modal.getInstance(modal);
                     modalInstance.hide();
                     form.reset();
-                    if (fechaInput) fechaInput.valueAsDate = new Date();
+                    if (fechaInput) {
+                        const hoy = new Date();
+                        const fechaLocal = hoy.getFullYear() + '-' + 
+                                          String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
+                                          String(hoy.getDate()).padStart(2, '0');
+                        fechaInput.value = fechaLocal;
+                    }
                     mostrarAlerta('Ingreso registrado correctamente', 'success');
                     setTimeout(() => window.location.reload(), 1500);
                 } else {

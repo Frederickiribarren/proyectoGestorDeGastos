@@ -33,10 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para mostrar error en campo específico
     function showFieldError(field, errorElement, message) {
-        if (field) {
-            field.classList.remove('is-valid');
-            field.classList.add('is-invalid');
-        }
         if (errorElement) {
             errorElement.textContent = message;
             errorElement.classList.add('text-danger');

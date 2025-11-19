@@ -203,6 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const confirmDeleteInput = document.getElementById("confirmDelete");
         const confirmCheckbox = document.getElementById("confirmarEliminacion");
         const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+        const deleteAccountForm = document.getElementById("deleteAccountForm");
 
         function validarFormularioEliminar() {
             const textoEsValido = confirmDeleteInput.value === "ELIMINAR";
@@ -221,6 +222,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         confirmDeleteInput.addEventListener("input", validarFormularioEliminar);
         confirmCheckbox.addEventListener("change", validarFormularioEliminar);
+
+        // Prevenir envío del formulario si no cumple validaciones
+        if (deleteAccountForm) {
+            deleteAccountForm.addEventListener("submit", function(e) {
+                const textoEsValido = confirmDeleteInput.value === "ELIMINAR";
+                const checkboxMarcado = confirmCheckbox.checked;
+                
+                if (!textoEsValido || !checkboxMarcado) {
+                    e.preventDefault();
+                    alert("Debes escribir ELIMINAR y confirmar la eliminación");
+                    return false;
+                }
+            });
+        }
 
         // Resetear el formulario cuando se cierra el modal
         deleteAccountModal.addEventListener("hidden.bs.modal", function () {

@@ -22,7 +22,9 @@ import com.example.proyectspring.dto.PerfilDTO;
 import com.example.proyectspring.dto.SeguridadDTO;
 import com.example.proyectspring.dto.PalabraSeguridadDTO;
 import com.example.proyectspring.dto.EliminarCuentaDTO;
+import com.example.proyectspring.entity.ConfiguracionUsuario;
 import com.example.proyectspring.entity.Usuario;
+import com.example.proyectspring.service.ConfiguracionUsuarioService;
 import com.example.proyectspring.service.UsuarioService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +36,9 @@ public class PerfilController {
 
     @Autowired
     private UsuarioService usuarioService;
+    
+    @Autowired
+    private ConfiguracionUsuarioService configuracionService;
     
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -75,7 +80,13 @@ public class PerfilController {
         model.addAttribute("palabraSeguridadDTO", new PalabraSeguridadDTO());
         model.addAttribute("eliminarCuentaDTO", new EliminarCuentaDTO());
         model.addAttribute("usuario", usuario);
+        
+        // Verificar si tiene 2FA activado en configuración
+        ConfiguracionUsuario config = configuracionService.obtenerOCrearConfiguracion(usuario);
+        boolean requiere2FA = config.isAutenticacionDosFactores() && usuario.getPalabraSeguridad() != null;
+        
         model.addAttribute("tienePalabraSeguridad", usuario.getPalabraSeguridad() != null);
+        model.addAttribute("requiere2FA", requiere2FA);
         
         return "perfil/perfil";
     }

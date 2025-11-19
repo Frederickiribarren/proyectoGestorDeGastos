@@ -360,12 +360,12 @@
                             <i class="bi bi-eye-slash position-absolute end-0 me-3" id="togglePasswordModal" style="cursor: pointer; z-index: 10; top: 70%; transform: translateY(-50%);"></i>
                             <small class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
                         </div>
-                        <div class="mb-3" th:if="${tienePalabraSeguridad}">
+                        <div class="mb-3" th:if="${requiere2FA}">
                             <label for="palabraSeguridadEliminar" class="form-label fw-semibold">
-                                <i class="bi bi-shield-lock text-danger me-2"></i>Palabra de Seguridad
+                                <i class="bi bi-shield-lock text-danger me-2"></i>Palabra de Seguridad (2FA Activado)
                             </label>
-                            <input type="text" class="form-control" id="palabraSeguridadEliminar" th:field="*{palabraSeguridad}" placeholder="Ingresa tu palabra de seguridad" required>
-                            <small class="text-muted">Requerida para verificar tu identidad</small>
+                            <input type="text" class="form-control" id="palabraSeguridadEliminar" name="palabraSeguridad" th:value="${eliminarCuentaDTO.palabraSeguridad}" placeholder="Ingresa tu palabra de seguridad" required>
+                            <small class="text-muted">Requerida porque tienes autenticación de dos factores activada</small>
                             <small class="text-danger d-block" th:if="${#fields.hasErrors('palabraSeguridad')}" th:errors="*{palabraSeguridad}"></small>
                         </div>
                         <div class="form-check mb-3">

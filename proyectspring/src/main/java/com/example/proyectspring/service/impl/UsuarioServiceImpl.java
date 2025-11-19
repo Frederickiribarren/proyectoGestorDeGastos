@@ -13,10 +13,12 @@ import com.example.proyectspring.dao.IUsuarioDao;
 import com.example.proyectspring.dao.IIngresosDao;
 import com.example.proyectspring.repository.IngresoMonetarioRepository;
 import com.example.proyectspring.repository.ConfiguracionTarjetaRepository;
+import com.example.proyectspring.repository.ConfiguracionUsuarioRepository;
 import com.example.proyectspring.dto.PerfilDTO;
 import com.example.proyectspring.dto.RegistroDTO;
 import com.example.proyectspring.dto.SeguridadDTO;
 import com.example.proyectspring.dto.EliminarCuentaDTO;
+import com.example.proyectspring.entity.ConfiguracionUsuario;
 import com.example.proyectspring.entity.Usuario;
 import com.example.proyectspring.service.UsuarioService;
 
@@ -34,6 +36,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     
     @Autowired
     private ConfiguracionTarjetaRepository configuracionTarjetaRepository;
+    
+    @Autowired
+    private ConfiguracionUsuarioRepository configuracionUsuarioRepository;
 
     public UsuarioServiceImpl(IUsuarioDao usuarioDao, PasswordEncoder passwordEncoder) {
         this.usuarioDao = usuarioDao;
@@ -226,10 +231,14 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new Exception("Contraseña incorrecta");
         }
         
-        // Verificar palabra de seguridad solo si el usuario la tiene configurada
-        if (usuario.getPalabraSeguridad() != null && !usuario.getPalabraSeguridad().isEmpty()) {
+        // Verificar si tiene 2FA activado
+        Optional<ConfiguracionUsuario> configOpt = configuracionUsuarioRepository.findByUsuario(usuario);
+        boolean requiere2FA = configOpt.isPresent() && configOpt.get().isAutenticacionDosFactores();
+        
+        // Verificar palabra de seguridad solo si tiene 2FA activado
+        if (requiere2FA && usuario.getPalabraSeguridad() != null) {
             if (eliminarCuentaDTO.getPalabraSeguridad() == null || eliminarCuentaDTO.getPalabraSeguridad().isEmpty()) {
-                throw new Exception("Debe ingresar la palabra de seguridad");
+                throw new Exception("Debe ingresar la palabra de seguridad (2FA activado)");
             }
             if (!passwordEncoder.matches(eliminarCuentaDTO.getPalabraSeguridad(), usuario.getPalabraSeguridad())) {
                 throw new Exception("Palabra de seguridad incorrecta");
@@ -237,16 +246,19 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         
         // Eliminar datos relacionados en cascada
-        // 1. Eliminar todos los gastos del usuario
+        // 1. Eliminar configuración del usuario
+        configOpt.ifPresent(config -> configuracionUsuarioRepository.delete(config));
+        
+        // 2. Eliminar todos los gastos del usuario
         ingresosDao.deleteByUsuario(usuario);
         
-        // 2. Eliminar todos los ingresos monetarios del usuario
+        // 3. Eliminar todos los ingresos monetarios del usuario
         ingresoMonetarioRepository.deleteByUsuario(usuario);
         
-        // 3. Eliminar configuraciones de tarjetas del usuario
+        // 4. Eliminar configuraciones de tarjetas del usuario
         configuracionTarjetaRepository.deleteByUsuario(usuario);
         
-        // 4. Finalmente eliminar el usuario
+        // 5. Finalmente eliminar el usuario
         usuarioDao.deleteById(id);
     }
 

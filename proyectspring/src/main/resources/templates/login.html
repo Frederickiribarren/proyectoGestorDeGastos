@@ -39,30 +39,51 @@
     <span th:text="${mensaje}"></span>
   </div>
 
-  <form id="form" novalidate th:action="@{/login}" method="post" class="border border-dark rounded form-class p-4" style="width: 350px;">
-    <img class="mb-3 d-block mx-auto" th:src="@{/image/login.png}" src="/image/login.png" alt="" width="60" height="60">
-    <h1 class="h3 mb-3 fw-normal text-center">Inicia sesión</h1>
+  <form id="form" novalidate th:action="@{/login}" method="post" class="border border-dark rounded form-class p-4 shadow" style="width: 380px; background: rgba(255, 255, 255, 0.95);">
+    <div class="text-center mb-4">
+      <img class="mb-3" th:src="@{/image/login.png}" src="/image/login.png" alt="Login" width="72" height="72">
+      <h1 class="h3 fw-bold">Bienvenido</h1>
+      <p class="text-muted small mb-0">Inicia sesión en tu cuenta</p>
+    </div>
 
     <div class="form-floating mb-3">
       <input type="email" name="username" class="form-control" id="inputEmail" placeholder="name@example.com" required>
-      <label for="inputEmail">Correo</label>
+      <label for="inputEmail"><i class="bi bi-envelope me-2"></i>Correo electrónico</label>
       <p id="emailError" class="emailError"></p>
     </div>
-    <div class="form-floating mb-3 position-relative">
+    
+    <div class="form-floating mb-2 position-relative">
       <input type="password" name="password" class="form-control" id="inputPassword" placeholder="Password" required>
-      <label for="inputPassword">Contraseña</label>
+      <label for="inputPassword"><i class="bi bi-lock me-2"></i>Contraseña</label>
       <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer; z-index: 10; margin-top: -0.5rem;"></i>
       <p id="passError" class="passError"></p>
     </div>
 
-    <div class="checkbox mb-3">
-      <label>
-        <input type="checkbox" name="remember-me"> Recuerdame
-      </label>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="form-check">
+        <input type="checkbox" name="remember-me" class="form-check-input" id="rememberMe">
+        <label class="form-check-label small" for="rememberMe">
+          Recuérdame
+        </label>
+      </div>
+      <a th:href="@{/recuperar-password}" href="/recuperar-password" class="text-primary text-decoration-none small">
+        ¿Olvidaste tu contraseña?
+      </a>
     </div>
-    <button id="loginForm" class="w-100 btn btn-lg btn-primary mb-4" type="submit">Iniciar sesión</button>
+
+    <button id="loginForm" class="w-100 btn btn-lg btn-primary mb-3 fw-semibold" type="submit">
+      <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
+    </button>
     <p id="warning" class="warning"></p>
-    <p>¿No tienes una cuenta? <a th:href="@{/crearcuenta}" href="/crearcuenta"><br>Crear cuenta</a></p>
+    
+    <hr class="my-4">
+    
+    <div class="text-center">
+      <p class="text-muted small mb-2">¿No tienes una cuenta?</p>
+      <a th:href="@{/crearcuenta}" href="/crearcuenta" class="btn btn-outline-primary w-100">
+        <i class="bi bi-person-plus me-2"></i>Crear cuenta nueva
+      </a>
+    </div>
   </form>
   
 </main>

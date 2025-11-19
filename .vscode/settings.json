@@ -1,4 +1,6 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.home": "/home/frederick/.sdkman/candidates/java/current",
+    "spring-boot.ls.java.home": "/home/frederick/.sdkman/candidates/java/current"
 }
