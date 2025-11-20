@@ -33,6 +33,10 @@ import jakarta.validation.Valid;
 
 @Controller
 public class PerfilController {
+        @Autowired
+        private com.example.proyectspring.service.IngresoMonetarioService ingresoMonetarioService;
+    @Autowired
+    private com.example.proyectspring.service.IngresosService ingresosService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -80,14 +84,36 @@ public class PerfilController {
         model.addAttribute("palabraSeguridadDTO", new PalabraSeguridadDTO());
         model.addAttribute("eliminarCuentaDTO", new EliminarCuentaDTO());
         model.addAttribute("usuario", usuario);
-        
+
+        // Estadísticas rápidas: número de transacciones y balance acumulado
+        // Transacciones del mes actual
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        java.time.YearMonth mesActual = java.time.YearMonth.from(hoy);
+        int numTransaccionesMes = (int) ingresosService.obtenerIngresosPorUsuario(usuario).stream()
+            .filter(i -> i.getFecha() != null && java.time.YearMonth.from(i.getFecha()).equals(mesActual))
+            .count();
+
+        // Calcular balance acumulado: suma de ingresos monetarios menos gastos
+        double totalIngresos = ingresoMonetarioService.obtenerIngresosPorUsuario(usuario).stream()
+            .filter(i -> i.getFecha() != null && !i.getFecha().isAfter(hoy))
+            .mapToDouble(i -> i.getMonto() != null ? i.getMonto() : 0.0)
+            .sum();
+        double totalGastos = ingresosService.obtenerIngresosPorUsuario(usuario).stream()
+            .filter(i -> i.getFecha() != null && !i.getFecha().isAfter(hoy))
+            .mapToDouble(i -> i.getMonto() != null ? i.getMonto() : 0.0)
+            .sum();
+        double balanceAcumulado = totalIngresos - totalGastos;
+
+        model.addAttribute("numTransacciones", numTransaccionesMes);
+        model.addAttribute("balanceAcumulado", balanceAcumulado);
+
         // Verificar si tiene 2FA activado en configuración
         ConfiguracionUsuario config = configuracionService.obtenerOCrearConfiguracion(usuario);
         boolean requiere2FA = config.isAutenticacionDosFactores() && usuario.getPalabraSeguridad() != null;
-        
+
         model.addAttribute("tienePalabraSeguridad", usuario.getPalabraSeguridad() != null);
         model.addAttribute("requiere2FA", requiere2FA);
-        
+
         return "perfil/perfil";
     }
     

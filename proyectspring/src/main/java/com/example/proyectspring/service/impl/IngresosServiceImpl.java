@@ -18,6 +18,24 @@ import com.example.proyectspring.service.IngresosService;
 
 @Service
 public class IngresosServiceImpl implements IngresosService {
+        @Override
+        @Transactional(readOnly = true)
+        public Double calcularBalanceAcumuladoHastaHoy(Usuario usuario) {
+            List<Ingresos> ingresos = ingresosDao.findByUsuarioOrderByFechaDesc(usuario);
+            double balance = 0.0;
+            LocalDate hoy = LocalDate.now();
+            for (Ingresos ingreso : ingresos) {
+                if (ingreso.getFecha() != null && !ingreso.getFecha().isAfter(hoy)) {
+                    // Si la categoría contiene "gasto" se resta, si no se suma
+                    if (ingreso.getCategoria() != null && ingreso.getCategoria().toLowerCase().contains("gasto")) {
+                        balance -= ingreso.getMonto();
+                    } else {
+                        balance += ingreso.getMonto();
+                    }
+                }
+            }
+            return balance;
+        }
     
     private final IIngresosDao ingresosDao;
     

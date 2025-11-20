@@ -125,7 +125,7 @@
               <table class="table table-hover align-middle mb-0" id="tablaGastos">
                 <thead class="table-light">
                   <tr>
-                    <th class="ps-4">#</th>
+                    <!-- <th class="ps-4">#</th> -->
                     <th>Fecha</th>
                     <th>Descripción</th>
                     <th>Categoría</th>
@@ -138,7 +138,7 @@
                   <!-- Gastos desde la base de datos -->
                   <tr th:if="${gastos != null and !gastos.isEmpty()}" th:each="gasto, iterStat : ${gastos}"
                     th:attr="data-descripcion=${gasto.descripcion}, data-categoria=${gasto.categoria}, data-fecha=${gasto.fecha}">
-                    <td class="ps-4" th:text="${iterStat.count}">1</td>
+                    <!-- <td class="ps-4" th:text="${iterStat.count}">1</td> -->
                     <td th:text="${#temporals.format(gasto.fecha, 'dd/MM/yyyy')}">01/11/2024</td>
                     <td th:text="${gasto.descripcion}">Descripción</td>
                     <td>
@@ -205,6 +205,11 @@
 
   <!-- SCRIPTS -->
   <div th:replace="~{fragments/scripts :: scripts}"></div>
+
+  <!-- Inicializar array gastos con datos del backend -->
+  <script th:inline="javascript">
+    window.gastos = [[${gastos}]];
+  </script>
 
   <!--JS NUEVO GASTO-->
   <script th:src="@{/js/gastos/nuevoGasto.js}" src="/js/gastos/nuevoGasto.js"></script>

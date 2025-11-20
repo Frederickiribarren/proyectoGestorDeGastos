@@ -42,7 +42,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
                     <h6 class="text-muted mb-2">Gastos del Mes</h6>
-                    <h3 class="fw-bold mb-0" th:text="${'$' + #numbers.formatDecimal(totalGastosMes, 0, 'POINT', 2, 'COMMA')}">$0.00</h3>
+                    <h3 class="fw-bold mb-0" th:text="${'$' + #numbers.formatDecimal(totalGastosMes, 0, 'COMMA', 0, 'POINT') + ' CLP'}">$0 CLP</h3>
                   </div>
                   <div class="icon-box bg-danger bg-opacity-10 rounded-circle p-3">
                     <i class="bi bi-cash-stack text-danger fs-4"></i>
@@ -58,7 +58,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
                     <h6 class="text-muted mb-2">Ingresos del Mes</h6>
-                    <h3 class="fw-bold mb-0 text-success" th:text="${'$' + #numbers.formatDecimal(totalIngresosMes, 0, 'POINT', 2, 'COMMA')}">$0.00</h3>
+                    <h3 class="fw-bold mb-0 text-success" th:text="${'$' + #numbers.formatDecimal(totalIngresosMes, 0, 'COMMA', 0, 'POINT') + ' CLP'}">$0 CLP</h3>
                   </div>
                   <div class="icon-box bg-success bg-opacity-10 rounded-circle p-3">
                     <i class="bi bi-wallet2 text-success fs-4"></i>
@@ -75,8 +75,8 @@
                   <div>
                     <h6 class="text-muted mb-2">Ahorro (Ingresos - Gastos)</h6>
                     <h3 class="fw-bold mb-0" 
-                        th:classappend="${ahorro >= 0} ? 'text-success' : 'text-danger'"
-                        th:text="${'$' + #numbers.formatDecimal(ahorro, 0, 'POINT', 2, 'COMMA')}">$0.00</h3>
+                        th:class="${ahorro >= 0} ? 'fw-bold mb-0 text-success' : 'fw-bold mb-0 text-danger'"
+                        th:text="${'$' + #numbers.formatDecimal(ahorro, 0, 'COMMA', 0, 'POINT') + ' CLP'}">$0 CLP</h3>
                   </div>
                   <div class="icon-box bg-info bg-opacity-10 rounded-circle p-3">
                     <i class="bi bi-piggy-bank text-info fs-4"></i>

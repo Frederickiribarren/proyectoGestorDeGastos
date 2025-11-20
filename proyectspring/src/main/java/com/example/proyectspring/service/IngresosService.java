@@ -25,6 +25,12 @@ public interface IngresosService {
     public List<Ingresos> findAllIngresos();
 
     public Ingresos findIngresosById(Long id);
-    
+
     public void deleteIngresos(Long id);
+
+    /**
+     * Calcula el balance acumulativo hasta hoy para el usuario, sumando ingresos y restando gastos.
+     * Se considera "gasto" si la categoría contiene la palabra "gasto" (puedes ajustar la lógica).
+     */
+    Double calcularBalanceAcumuladoHastaHoy(Usuario usuario);
 }

@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Array para almacenar los gastos (simulando base de datos)
-    let gastos = [];
+    let gastos = window.gastos || [];
     let contadorId = 1;
     
     // Mapeo de categorías con iconos y estilos
@@ -429,40 +429,43 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Date(fecha + 'T00:00:00').toLocaleDateString('es-ES', opciones);
     }
     
-    // Función para actualizar estadísticas
+    // Función para actualizar estadísticas SIEMPRE usando el array gastos
     function actualizarEstadisticas() {
-        // Total de gastos
-        const total = gastos.reduce((sum, g) => sum + g.monto, 0);
-        document.getElementById('montoTotal').textContent = `$${formatearPesosChilenos(total)}`;
-        document.getElementById('totalGastos').textContent = `${gastos.length} gasto${gastos.length !== 1 ? 's' : ''}`;
-        
+        if (!gastos || gastos.length === 0) {
+            document.getElementById('totalMes').textContent = '$0 CLP';
+            document.getElementById('promedioDiario').textContent = '$0 CLP';
+            document.getElementById('categoriaPrincipal').textContent = '-';
+            return;
+        }
+
         // Gastos del mes actual
-        const mesActual = new Date().getMonth();
-        const añoActual = new Date().getFullYear();
+        const fechaActual = new Date();
+        const mesActual = fechaActual.getMonth();
+        const añoActual = fechaActual.getFullYear();
         const gastosMes = gastos.filter(g => {
             const fecha = new Date(g.fecha + 'T00:00:00');
             return fecha.getMonth() === mesActual && fecha.getFullYear() === añoActual;
         });
         const totalMes = gastosMes.reduce((sum, g) => sum + g.monto, 0);
-        document.getElementById('totalMes').textContent = `$${formatearPesosChilenos(totalMes)}`;
-        
+        document.getElementById('totalMes').textContent = `$${formatearPesosChilenos(totalMes)} CLP`;
+
         // Promedio diario
         const diasDelMes = new Date(añoActual, mesActual + 1, 0).getDate();
-        const promedio = totalMes / diasDelMes;
-        document.getElementById('promedioDiario').textContent = `$${formatearPesosChilenos(promedio)}`;
-        
+        const promedio = Math.round(totalMes / diasDelMes);
+        document.getElementById('promedioDiario').textContent = `$${formatearPesosChilenos(promedio)} CLP`;
+
         // Categoría principal
         const categoriasCont = {};
-        gastos.forEach(g => {
+        gastosMes.forEach(g => {
             categoriasCont[g.categoria] = (categoriasCont[g.categoria] || 0) + 1;
         });
-        
         let catPrincipal = '-';
         let maxCont = 0;
         for (const [cat, cont] of Object.entries(categoriasCont)) {
             if (cont > maxCont) {
                 maxCont = cont;
-                catPrincipal = categorias[cat].nombre;
+                const categoriaInfo = categorias[cat];
+                catPrincipal = categoriaInfo ? `${categoriaInfo.icono} ${categoriaInfo.nombre}` : cat;
             }
         }
         document.getElementById('categoriaPrincipal').textContent = catPrincipal;
@@ -558,72 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Función para calcular y actualizar las estadísticas
-    function actualizarEstadisticas() {
-        const filas = document.querySelectorAll('#tbodyGastos tr:not(#emptyState)');
-        
-        if (filas.length === 0) {
-            document.getElementById('totalMes').textContent = '$0 CLP';
-            document.getElementById('promedioDiario').textContent = '$0 CLP';
-            document.getElementById('categoriaPrincipal').textContent = '-';
-            return;
-        }
-        
-        // Calcular gastos del mes actual
-        const fechaActual = new Date();
-        const mesActual = fechaActual.getMonth();
-        const añoActual = fechaActual.getFullYear();
-        
-        let totalMes = 0;
-        const categoriasCont = {};
-        
-        filas.forEach(fila => {
-            const fechaData = fila.dataset.fecha; // formato yyyy-MM-dd
-            const categoriaData = fila.dataset.categoria;
-            const montoCell = fila.querySelector('td:nth-child(6)');
-            
-            if (fechaData && montoCell) {
-                const [año, mes, dia] = fechaData.split('-');
-                const fechaGasto = new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
-                
-                // Obtener monto del texto
-                const montoTexto = montoCell.textContent.replace(/[^0-9]/g, '');
-                const monto = parseInt(montoTexto) || 0;
-                
-                // Sumar si es del mes actual
-                if (fechaGasto.getMonth() === mesActual && fechaGasto.getFullYear() === añoActual) {
-                    totalMes += monto;
-                }
-                
-                // Contar categorías
-                if (categoriaData) {
-                    categoriasCont[categoriaData] = (categoriasCont[categoriaData] || 0) + 1;
-                }
-            }
-        });
-        
-        // Actualizar total del mes
-        document.getElementById('totalMes').textContent = '$' + totalMes.toLocaleString('es-CL') + ' CLP';
-        
-        // Calcular promedio diario
-        const diasDelMes = new Date(añoActual, mesActual + 1, 0).getDate();
-        const promedio = Math.round(totalMes / diasDelMes);
-        document.getElementById('promedioDiario').textContent = '$' + promedio.toLocaleString('es-CL') + ' CLP';
-        
-        // Encontrar categoría principal
-        let catPrincipal = '-';
-        let maxCont = 0;
-        
-        for (const [cat, cont] of Object.entries(categoriasCont)) {
-            if (cont > maxCont) {
-                maxCont = cont;
-                const categoriaInfo = categorias[cat];
-                catPrincipal = categoriaInfo ? `${categoriaInfo.icono} ${categoriaInfo.nombre}` : cat;
-            }
-        }
-        
-        document.getElementById('categoriaPrincipal').textContent = catPrincipal;
-    }
+    // (Eliminada función duplicada de estadísticas basada en DOM)
     
     // Poblar filtro de meses y actualizar estadísticas al cargar la página
     if (filtroMes) {
@@ -715,16 +653,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Actualizar total en el footer
-        const montoTotalElement = document.getElementById('montoTotal');
-        if (montoTotalElement) {
-            if (filasVisibles === 0) {
-                montoTotalElement.innerHTML = '<span>$0 CLP</span>';
-            } else {
-                montoTotalElement.innerHTML = `<span>$${totalVisible.toLocaleString('es-CL')} CLP</span>`;
-            }
-        }
-        
         // Mostrar/ocultar mensaje de sin resultados
         const emptyState = document.getElementById('emptyState');
         if (filasVisibles === 0 && filas.length > 0) {
@@ -746,6 +674,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 noResultsRow.remove();
             }
         }
+        // Actualizar estadísticas usando array gastos
+        actualizarEstadisticas();
     }
     
     // Limpiar formulario al cerrar el modal
