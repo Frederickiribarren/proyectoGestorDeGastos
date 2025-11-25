@@ -208,7 +208,9 @@
 
   <!-- Inicializar array gastos con datos del backend -->
   <script th:inline="javascript">
-    window.gastos = [[${gastos}]];
+    /*<![CDATA[*/
+    window.gastos = /*[[${gastosForJs}]]*/ [];
+    /*]]>*/
   </script>
 
   <!--JS NUEVO GASTO-->

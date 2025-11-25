@@ -2,6 +2,26 @@
 const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
+// Mostrar toasts simples en la esquina inferior (usa `configToastContainer` en el template)
+function showToast(message, type = 'info', timeout = 3000) {
+  const container = document.getElementById('configToastContainer');
+  if (!container) {
+    console.warn('No se encontró contenedor de toasts');
+    return;
+  }
+  const id = 't' + Date.now();
+  const el = document.createElement('div');
+  el.className = `toast align-items-center text-white bg-${type} border-0 show mb-2`;
+  el.setAttribute('role', 'alert');
+  el.setAttribute('aria-live', 'assertive');
+  el.setAttribute('aria-atomic', 'true');
+  el.id = id;
+  el.style.minWidth = '220px';
+  el.innerHTML = `<div class="d-flex"><div class="toast-body">${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
+  container.appendChild(el);
+  setTimeout(() => { const t = document.getElementById(id); if (t) t.remove(); }, timeout);
+}
+
 // Cargar configuración de notificaciones al inicio
 async function cargarConfiguracionNotificaciones() {
   try {
@@ -163,7 +183,7 @@ if (btn2FA) {
       btn.disabled = false;
     } catch (error) {
       console.error('Error al actualizar 2FA:', error);
-      alert('Error al actualizar la autenticación de dos factores');
+      showToast('Error al actualizar la autenticación de dos factores', 'danger');
       btn.disabled = false;
     }
   });

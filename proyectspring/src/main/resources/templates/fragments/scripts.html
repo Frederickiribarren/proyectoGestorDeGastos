@@ -10,6 +10,31 @@
     
     <!-- AUTO-DISMISS ALERTS -->
     <script th:src="@{/js/common/auto-dismiss-alerts.js}" src="/js/common/auto-dismiss-alerts.js"></script>
+        <!-- Sidebar active link script -->
+        <script>
+            (function(){
+                function markActiveSidebar() {
+                    try {
+                        const path = window.location.pathname || '/';
+                        const links = document.querySelectorAll('aside#sidebarMenu a.nav-link');
+                        links.forEach(a => {
+                            try {
+                                const href = a.getAttribute('href') || a.getAttribute('th:href');
+                                if (!href) return;
+                                // Normalize
+                                const normalized = href.replace(/^https?:\/\/[^^/]+/, '').split('?')[0];
+                                if (path === normalized || path.startsWith(normalized + '/')) {
+                                    a.classList.add('active');
+                                } else {
+                                    a.classList.remove('active');
+                                }
+                            } catch(e) {}
+                        });
+                    } catch(e) { console.warn('sidebar active script error', e); }
+                }
+                if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', markActiveSidebar); else markActiveSidebar();
+            })();
+        </script>
 </th:block>
 </body>
 </html>

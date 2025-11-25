@@ -2,6 +2,9 @@ package com.example.proyectspring.controllers;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +44,23 @@ public class GastosController {
         
         // Obtener los gastos del usuario
         List<Ingresos> gastos = ingresosService.obtenerIngresosPorUsuario(usuario);
-        
+
+        // Preparar una versión serializable a JSON (fechas como strings)
+        List<Map<String, Object>> gastosForJs = new ArrayList<>();
+        for (Ingresos g : gastos) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", g.getId());
+            m.put("monto", g.getMonto());
+            m.put("descripcion", g.getDescripcion());
+            m.put("categoria", g.getCategoria());
+            m.put("metodoPago", g.getMetodoPago());
+            m.put("fecha", g.getFecha() != null ? g.getFecha().toString() : null);
+            gastosForJs.add(m);
+        }
+
         model.addAttribute("usuario", usuario);
         model.addAttribute("gastos", gastos);
+        model.addAttribute("gastosForJs", gastosForJs);
         return "gastos/gastos";
     }
     
