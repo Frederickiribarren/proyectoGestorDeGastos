@@ -40,6 +40,10 @@
   </div>
 
   <form id="form" novalidate th:action="@{/login}" method="post" class="border border-dark rounded form-class p-4 shadow" style="width: 380px; background: rgba(255, 255, 255, 0.95);">
+    
+    <!-- CSRF token -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
     <div class="text-center mb-4">
       <img class="mb-3" th:src="@{/image/login.png}" src="/image/login.png" alt="Login" width="72" height="72">
       <h1 class="h3 fw-bold">Bienvenido</h1>
