@@ -36,7 +36,7 @@ public class SecurityConfig {
             .userDetailsService(userDetailsService)
             .authorizeHttpRequests(auth -> auth
                 // Permitir acceso público a estas rutas
-                .requestMatchers("/", "/login", "/crearcuenta", "/registro").permitAll()
+                .requestMatchers("/", "/login", "/crearcuenta", "/registro", "/recuperar-password", "/recuperar-password/**").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/image/**", "/images/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 // Todas las demás rutas requieren autenticación
