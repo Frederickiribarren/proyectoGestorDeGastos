@@ -4,16 +4,29 @@
     <title>Mi Perfil - PocketBook</title>
 </head>
 <body>
-    <!--CSS-->
-    <link rel="stylesheet" th:href="@{/css/common/navbar.css}" href="/css/common/navbar.css">
-    <link rel="stylesheet" th:href="@{/css/perfil/perfil.css}" href="/css/perfil/perfil.css">
+        <!--CSS-->
+        <link rel="stylesheet" th:href="@{/css/dashboard/dashboard.css}" href="/css/dashboard/dashboard.css">
+        <link rel="stylesheet" th:href="@{/css/perfil/perfil.css}" href="/css/perfil/perfil.css">
     
-    <!-- NAVBAR -->
-    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="container py-5">
-        <div class="row">
+        <!-- CONTENEDOR PRINCIPAL CON SIDEBAR Y CONTENIDO -->
+        <div class="container-fluid">
+            <div class="row">
+                <!-- SIDEBAR -->
+                <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+
+                <!-- CONTENIDO PRINCIPAL -->
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-3 mb-4 border-bottom">
+                        <div>
+                            <h1 class="h2 fw-bold mb-1"><i class="bi bi-person text-primary me-2"></i>Mi Perfil</h1>
+                            <p class="text-muted mb-0">Ver y editar tu información personal y seguridad</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
             <!-- COLUMNA IZQUIERDA - INFO USUARIO -->
             <div class="col-lg-4 mb-4">
                 <div class="card border-0 shadow-sm sticky-card">
@@ -326,8 +339,10 @@
                     </div>
                 </div>
             </div>
+                    </div>
+                </main>
+            </div>
         </div>
-    </div>
 
     <!-- MODAL DE CONFIRMACIÓN PARA ELIMINAR CUENTA -->
     <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
