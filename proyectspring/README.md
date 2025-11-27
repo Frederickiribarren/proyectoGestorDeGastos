@@ -54,10 +54,9 @@ proyectspring/
 │   │   │   │   ├── ConfiguracionController.java
 │   │   │   │   └── GestorUsuarios.java
 │   │   │   ├── entity/                # Entidades JPA
-│   │   │   │   └── Usuario.java
+
 │   │   │   └── ProyectspringApplication.java
 │   │   └── resources/
-│   │       ├── static/
 │   │       │   ├── css/               # Estilos CSS
 │   │       │   │   ├── dashboard/
 │   │       │   │   ├── login/
@@ -131,7 +130,6 @@ proyectspring/
   - Sección de avatar
   - Formulario de datos personales
   - Opciones de cambio de contraseña
-  - Autenticación de dos factores (2FA)
   - Modal de confirmación para eliminar cuenta
 
 - ✅ **Configuración**
